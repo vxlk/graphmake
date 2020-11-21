@@ -1,0 +1,9 @@
+TODO:
+1. Render rectangles
+2. Make rectangles respond to mouse
+3. Drag rectangles
+
+
+DEPENDS:
+qt 5 (download most recent version from website)
+pyqt5 (pip install PyQt5)
