@@ -1,9 +1,9 @@
 TODO:
-1. Render rectangles
 2. Make rectangles respond to mouse
 3. Drag rectangles
-
+4. separate text editor and graph widget
 
 DEPENDS:
 qt 5 (download most recent version from website)
 pyqt5 (pip install PyQt5)
+https://github.com/pyqt/examples/blob/_/src/10%20QPainter%20Python%20example/main.py
