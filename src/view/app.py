@@ -2,7 +2,11 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-class PlainTextEdit(QPlainTextEdit):
+class TextEditor(QPlainTextEdit):
+    def __init__(self):
+        super().__init__()
+
+class GraphEditor(QAbstractScrollArea):
     def __init__(self):
         super().__init__()
         self._nodes = []
@@ -21,7 +25,17 @@ class PlainTextEdit(QPlainTextEdit):
             painter.drawRect(rect)
 
 app = QApplication([])
-text = PlainTextEdit()
+
+graph = GraphEditor()
+text = TextEditor()
+
+graphContainer = QDockWidget("Graph Container")
+graphContainer.setAllowedAreas(Qt.LeftDockWidgetArea)
+graphContainer.setWidget(graph)
+
+textContainer = QDockWidget("Text Container")
+textContainer.setAllowedAreas(Qt.RightDockWidgetArea)
+textContainer.setWidget(text)
 text.setPlainText("Click with the mouse below to shoot ;-)")
 
 # The rest of the code is as for the normal version of the text editor.
@@ -40,10 +54,10 @@ class MainWindow(QMainWindow):
         elif answer & QMessageBox.Cancel:
             e.ignore()
 
-app.setApplicationName("Text Editor")
+app.setApplicationName("Graphmake Alpha")
 window = MainWindow()
-window.setCentralWidget(text)
-
+window.addDockWidget(Qt.LeftDockWidgetArea, graphContainer)
+window.addDockWidget(Qt.RightDockWidgetArea, textContainer)
 file_path = None
 
 menu = window.menuBar().addMenu("&File")
