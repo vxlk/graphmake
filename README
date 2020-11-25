@@ -1,7 +1,6 @@
 TODO:
-2. Make rectangles respond to mouse
-3. Drag rectangles
-4. separate text editor and graph widget
+1. Connect the node concept to the rectangles
+2. Drag rectangles
 
 DEPENDS:
 qt 5 (download most recent version from website)

@@ -1,34 +1,41 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from node import NodeWidget
 
 class TextEditor(QPlainTextEdit):
     def __init__(self):
         super().__init__()
+        #self.setStyle("Fusion")
+        # Now use a palette to switch to dark colors: (This no workie)
+        palette = QPalette()
+        palette.setColor(QPalette.Window, QColor(53, 53, 53))
+        palette.setColor(QPalette.WindowText, Qt.white)
+        self.viewport().setPalette(palette)
 
 class GraphEditor(QAbstractScrollArea):
     def __init__(self):
         super().__init__()
         self._nodes = []
     def mousePressEvent(self, e):
-        self._nodes.append(e.pos())
+        self._nodes.append(NodeWidget(e.pos().x(), e.pos().y()))
         super().mousePressEvent(e)
         self.viewport().update()
     def paintEvent(self, e):
         super().paintEvent(e)
         painter = QPainter(self.viewport())
         for node in self._nodes:
-            rect = QRect(node, QSize(100, 100))
-            brush = QBrush(Qt.blue)
-            rectF = QRectF(node.x(), node.y(), 100, 100)
-            painter.fillRect(rectF, brush)
-            painter.drawRect(rect)
+            painter.fillRect(node.asRectF(), node.brush())
+            painter.drawRect(node.asRect())
 
+# make Qapp
 app = QApplication([])
 
+# make the text and graph widgets themselves
 graph = GraphEditor()
 text = TextEditor()
 
+# create dock widget "containers" for the text and graph widgets
 graphContainer = QDockWidget("Graph Container")
 graphContainer.setAllowedAreas(Qt.LeftDockWidgetArea)
 graphContainer.setWidget(graph)
@@ -36,10 +43,9 @@ graphContainer.setWidget(graph)
 textContainer = QDockWidget("Text Container")
 textContainer.setAllowedAreas(Qt.RightDockWidgetArea)
 textContainer.setWidget(text)
-text.setPlainText("Click with the mouse below to shoot ;-)")
+text.setPlainText("Cmake text goes here..")
 
-# The rest of the code is as for the normal version of the text editor.
-
+# code for the app itself
 class MainWindow(QMainWindow):
     def closeEvent(self, e):
         if not text.document().isModified():
@@ -111,6 +117,16 @@ def show_about_dialog():
            "Copyright &copy; Company Inc.</p>"
     QMessageBox.about(window, "About Text Editor", text)
 about_action.triggered.connect(show_about_dialog)
+
+# Force the style to be the same on all OSs:
+app.setStyle("Fusion")
+
+# Now use a palette to switch to dark colors:
+palette = QPalette()
+palette.setColor(QPalette.Window, QColor(53, 53, 53))
+palette.setColor(QPalette.WindowText, Qt.white)
+
+app.setPalette(palette)
 
 window.show()
 app.exec_()
