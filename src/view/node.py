@@ -9,6 +9,7 @@ class NodeWidget:
         self.m_y = y
         self.m_width = width
         self.m_height = height
+        self.isSelected = False
 
         #default color
         self.m_color = Qt.BrushStyle(Qt.blue)

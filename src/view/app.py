@@ -17,10 +17,37 @@ class GraphEditor(QAbstractScrollArea):
     def __init__(self):
         super().__init__()
         self._nodes = []
+
+    # event hooks    
     def mousePressEvent(self, e):
-        self._nodes.append(NodeWidget(e.pos().x(), e.pos().y()))
+        wasInsideANode = False
+        for node in self._nodes:
+            if node.asRect().contains(e.pos()):
+                #set as the one to be moved ...
+                node.isSelected = True
+                wasInsideANode = True
+        if wasInsideANode == False:        
+            self._nodes.append(NodeWidget(e.pos().x(), 
+                                          e.pos().y()))
         super().mousePressEvent(e)
         self.viewport().update()
+    
+    def mouseReleaseEvent(self, e):
+        for node in self._nodes:
+            node.isSelected = False
+        super().mouseMoveEvent(e)
+        self.viewport().update()
+
+    def mouseMoveEvent(self, e):
+        for node in self._nodes:
+            if node.isSelected:
+                #for now i am just going to translate,
+                #eventually will want to offset position
+                #based on movement from last frame
+                node.setPos(e.pos().x(), e.pos().y())
+        super().mouseMoveEvent(e)
+        self.viewport().update()
+    
     def paintEvent(self, e):
         super().paintEvent(e)
         painter = QPainter(self.viewport())
