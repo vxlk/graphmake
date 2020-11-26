@@ -1,5 +1,7 @@
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+#ignores the controller for now ... refactor later
+from model.node_model import Node
 
 # represents a node in gui view, can communicate with the model through the controller by name (for now name == guid)
 # for now make a node hold a QRect, QRectF, and QBrush (for color)
@@ -10,6 +12,7 @@ class NodeWidget:
         self.m_width = width
         self.m_height = height
         self.isSelected = False
+        self.backendNode = Node()
 
         #default color
         self.m_color = Qt.BrushStyle(Qt.blue)

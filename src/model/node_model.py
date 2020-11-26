@@ -3,5 +3,5 @@ from PyQt5.QtCore import *
 class Node(QObject):
     def __init__(self):
         super().__init__()
-        name = QString()
-        code = QString()
+        self.name = "Node"
+        self.code = ""

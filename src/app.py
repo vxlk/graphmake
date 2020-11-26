@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from node import NodeWidget
+from view.node import NodeWidget
 
 class TextEditor(QPlainTextEdit):
     def __init__(self):
