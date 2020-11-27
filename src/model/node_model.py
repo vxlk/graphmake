@@ -4,4 +4,4 @@ class Node(QObject):
     def __init__(self):
         super().__init__()
         self.name = "Node"
-        self.code = ""
+        self.code = "Some Cmake Code"

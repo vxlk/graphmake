@@ -3,20 +3,20 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from view.node import NodeWidget
 
-class TextEditor(QPlainTextEdit):
-    def __init__(self):
-        super().__init__()
-        #self.setStyle("Fusion")
-        # Now use a palette to switch to dark colors: (This no workie)
-        palette = QPalette()
-        palette.setColor(QPalette.Window, QColor(53, 53, 53))
-        palette.setColor(QPalette.WindowText, Qt.white)
-        self.viewport().setPalette(palette)
-
 class GraphEditor(QAbstractScrollArea):
+    
+    updateSignal = pyqtSignal(object)
+
     def __init__(self):
         super().__init__()
         self._nodes = []
+        # make a signal that broadcasts the node changes
+    
+    def genCmakeText(self):
+        text = "" #reset the text before filling it in
+        for node in self._nodes:
+            text += node.text() + "\n"
+        return text
 
     # event hooks    
     def mousePressEvent(self, e):
@@ -54,6 +54,30 @@ class GraphEditor(QAbstractScrollArea):
         for node in self._nodes:
             painter.fillRect(node.asRectF(), node.brush())
             painter.drawRect(node.asRect())
+            painter.drawText(node.posText().x(), 
+                             node.posText().y(), 
+                             node.name())
+        codeString = self.genCmakeText()
+        self.updateSignal.emit(codeString)
+        
+class TextEditor(QPlainTextEdit):
+    def __init__(self):
+        super().__init__()
+        #self.setStyle("Fusion")
+        # Now use a palette to switch to dark colors: (This no workie)
+        #palette = QPalette()
+        #palette.setColor(QPalette.Window, QColor(53, 53, 53))
+        #palette.setColor(QPalette.WindowText, Qt.white)
+        #self.viewport().setPalette(palette)
+        self.text = ""
+
+    def connectGraph(self, graphEditor):
+        graphEditor.updateSignal.connect(self.onGraphUpdate)
+
+    @pyqtSlot(object)
+    def onGraphUpdate(self, text):
+        self.text = text
+        self.setPlainText(text)
 
 # make Qapp
 app = QApplication([])
@@ -61,6 +85,7 @@ app = QApplication([])
 # make the text and graph widgets themselves
 graph = GraphEditor()
 text = TextEditor()
+text.connectGraph(graph)
 
 # create dock widget "containers" for the text and graph widgets
 graphContainer = QDockWidget("Graph Container")
@@ -70,7 +95,6 @@ graphContainer.setWidget(graph)
 textContainer = QDockWidget("Text Container")
 textContainer.setAllowedAreas(Qt.RightDockWidgetArea)
 textContainer.setWidget(text)
-text.setPlainText("Cmake text goes here..")
 
 # code for the app itself
 class MainWindow(QMainWindow):
