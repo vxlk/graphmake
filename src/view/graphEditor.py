@@ -52,10 +52,23 @@ class GraphEditor(QAbstractScrollArea):
         super().paintEvent(e)
         painter = QPainter(self.viewport())
         for node in self._nodes:
+            # draw rect with text in the middle
             painter.fillRect(node.asRectF(), node.brush())
             painter.drawRect(node.asRect())
             painter.drawText(node.posText().x(), 
                              node.posText().y(), 
                              node.name())
+            # draw pins --- SERIOUSLY NEEDS REWORKED ---
+            i = 0
+            for pin in node.pins:
+                w = 16
+                h = 16
+                painter.fillRect(node.pinPos(pin.isInput, i).x() 
+                                 if pin.isInput 
+                                 else node.pinPos(pin.isInput, i).x() + node.m_width,
+                                 node.pinPos(pin.isInput, i).y(), w * 0.2, w * 0.5, 
+                                 node.brush()
+                                 )
+                i+=1
         codeString = self.genCmakeText()
         self.updateSignal.emit(codeString)

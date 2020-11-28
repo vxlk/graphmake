@@ -3,6 +3,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 #ignores the controller for now ... refactor later
 from model.node_model import Node
+from model.pin_model import *
 
 # represents a node in gui view, can communicate with the model through the controller by name (for now name == guid)
 # for now make a node hold a QRect, QRectF, and QBrush (for color)
@@ -16,6 +17,12 @@ class NodeWidget(QWidget):
         self.isSelected = False
         #not going thru controller, dunno if big poop or not
         self.backendNode = Node()
+
+        self.pins = []
+        # add an output
+        self.pins.append(create_output_pin())
+        # add an input
+        self.pins.append(create_input_pin())
         
         #default color
         self.m_color = Qt.BrushStyle(Qt.blue)
@@ -60,3 +67,16 @@ class NodeWidget(QWidget):
 
     def text(self):
         return self.backendNode.code
+
+    # should send num from 0 index
+    def pinPos(self, isInput, num):
+        denom = num + 2
+        if denom > 4:
+            denom = 2
+            numerator = num
+        else: 
+            numerator = 1
+        return QPoint(self.pos().x(),
+                      self.pos().y() + numerator/denom)
+
+        
