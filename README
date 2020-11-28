@@ -1,5 +1,5 @@
 TODO:
-1. make node names unique
+1. set up input/output classes
 2. set up connection class
 3. show connection in gui
 
