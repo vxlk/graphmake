@@ -1,7 +1,6 @@
 TODO:
-1. decouple texteditor and graph out of app.py
-2. set up connection class
-3. show connection in gui
+1. set up connection class
+2. show connection in gui
 
 DEPENDS:
 qt 5 (download most recent version from website)
