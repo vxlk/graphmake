@@ -27,6 +27,7 @@ class NodeWidget(QWidget):
         #default color
         self.m_color = Qt.BrushStyle(Qt.blue)
         self.m_brush = QBrush(Qt.blue)
+        self.m_brush.setStyle(Qt.SolidPattern)
 
     # setters
     def setSize(self, width, height):

@@ -63,12 +63,14 @@ class GraphEditor(QAbstractScrollArea):
             for pin in node.pins:
                 w = 16
                 h = 16
-                painter.fillRect(node.pinPos(pin.isInput, i).x() 
-                                 if pin.isInput 
-                                 else node.pinPos(pin.isInput, i).x() + node.m_width,
-                                 node.pinPos(pin.isInput, i).y(), w * 0.2, w * 0.5, 
+                pinPointX = node.pinPos(pin.isInput, i).x() if pin.isInput else node.pinPos(pin.isInput, i).x() + node.m_width
+                pinPointY = node.pinPos(pin.isInput, i).y()
+                painter.fillRect(pinPointX,
+                                 pinPointY, 
+                                 w * 0.2, w * 0.5, 
                                  node.brush()
                                  )
+                painter.drawEllipse(pinPointX, pinPointY, 10, 10)
                 i+=1
         codeString = self.genCmakeText()
         self.updateSignal.emit(codeString)
