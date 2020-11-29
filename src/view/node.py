@@ -78,6 +78,7 @@ class NodeWidget(QWidget):
         else: 
             numerator = 1
         return QPoint(self.pos().x(),
-                      self.pos().y() + numerator/denom)
+                      self.pos().y() + numerator/denom) if isInput else QPoint(self.pos().x(),
+                                                                        self.pos().y() - numerator/denom)
 
         
