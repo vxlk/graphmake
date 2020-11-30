@@ -1,5 +1,5 @@
 TODO:
-1. Show when a node is about to be connected
+1. Make potential connections only display when it is a proper input/output connection
 2. implement connections
 
 DEPENDS:

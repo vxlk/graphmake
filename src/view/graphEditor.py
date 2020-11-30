@@ -76,10 +76,12 @@ class GraphEditor(QAbstractScrollArea):
         super().paintEvent(e)
         painter = QPainter(self.viewport())
 
+        # draw line
         if self.drawConnection:
             painter.setBrush(Qt.black)
             painter.drawLine(self.connectionStartPoint, self.connectionEndPoint)
-
+        
+        # render nodes and pins
         for node in self._nodes:
             painter.setBrush(node.color())
             # draw rect with text in the middle
@@ -94,8 +96,16 @@ class GraphEditor(QAbstractScrollArea):
                 w = 16
                 h = 16
                 
+                if self.drawConnection:
+                    if pin.asCircle().contains(self.connectionEndPoint):
+                        pin.setSize(20,20)
+                    else:
+                        pin.setSize(10,10)
+
                 pinPointX = pin.pos().x()
                 pinPointY = pin.pos().y()
+                pinWidth = pin.m_width
+                pinHeight = pin.m_height
 
                 painter.setBrush(pin.color())
 
@@ -106,9 +116,9 @@ class GraphEditor(QAbstractScrollArea):
                 #                 node.brush()
                 #                 )
                 if pin.isInput():
-                    painter.drawEllipse(pinPointX - 10, pinPointY, 10, 10)
+                    painter.drawEllipse(pinPointX - 10, pinPointY, pinWidth, pinHeight)
                 else:
-                    painter.drawEllipse(pinPointX, pinPointY, 10, 10)
+                    painter.drawEllipse(pinPointX, pinPointY, pinWidth, pinHeight)
                 i+=1
         codeString = self.genCmakeText()
         self.updateSignal.emit(codeString)
