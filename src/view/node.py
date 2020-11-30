@@ -3,7 +3,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 #ignores the controller for now ... refactor later
 from model.node_model import Node
-from model.pin_model import *
+from view.pin import *
 
 # represents a node in gui view, can communicate with the model through the controller by name (for now name == guid)
 # for now make a node hold a QRect, QRectF, and QBrush (for color)
@@ -20,12 +20,14 @@ class NodeWidget(QWidget):
 
         self.pins = []
         # add an output
-        self.pins.append(create_output_pin())
+        outputPos = self.pinPos(False, 0)
+        self.pins.append(create_output_pin_widget(outputPos.x(), outputPos.y()))
         # add an input
-        self.pins.append(create_input_pin())
+        inputPos = self.pinPos(True, 0)
+        self.pins.append(create_input_pin_widget(inputPos.x(), inputPos.y()))
         
         #default color
-        self.m_color = Qt.BrushStyle(Qt.blue)
+        self.m_color = Qt.blue
         self.m_brush = QBrush(Qt.blue)
         self.m_brush.setStyle(Qt.SolidPattern)
 
@@ -41,7 +43,12 @@ class NodeWidget(QWidget):
     def setPos(self, x, y):
         self.m_x = x
         self.m_y = y
-
+        i = 0
+        for pin in self.pins:
+            pinPos = self.pinPos(pin.isInput(), i)
+            pin.setPos(pinPos.x(), pinPos.y())
+            i+=1
+            
     # getters
     def pos(self):
         return QPoint(self.m_x, self.m_y)
@@ -78,7 +85,7 @@ class NodeWidget(QWidget):
         else: 
             numerator = 1
         return QPoint(self.pos().x(),
-                      self.pos().y() + numerator/denom) if isInput else QPoint(self.pos().x(),
+                      self.pos().y() + numerator/denom) if isInput else QPoint(self.pos().x() + self.m_width,
                                                                         self.pos().y() - numerator/denom)
 
         

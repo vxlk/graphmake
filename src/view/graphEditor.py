@@ -10,7 +10,13 @@ class GraphEditor(QAbstractScrollArea):
     def __init__(self):
         super().__init__()
         self._nodes = []
-        # make a signal that broadcasts the node changes
+        self.drawConnection = False
+        self.connectionStartPoint = QPoint(0,0)
+        self.connectionEndPoint = QPoint(0,0)
+        self.setMouseTracking(True)
+        # enable this later if needed if we need a
+        # custom event loop
+        #self.installEventFilter(self)
     
     def genCmakeText(self):
         text = "" #reset the text before filling it in
@@ -20,13 +26,27 @@ class GraphEditor(QAbstractScrollArea):
 
     # event hooks    
     def mousePressEvent(self, e):
-        wasInsideANode = False
+        # reset our draw event loop
+        if self.drawConnection:
+            self.drawConnection = False
+            return
+
+        wasInsideANodeOrPin = False
         for node in self._nodes:
             if node.asRect().contains(e.pos()):
                 #set as the one to be moved ...
                 node.isSelected = True
-                wasInsideANode = True
-        if wasInsideANode == False:        
+                wasInsideANodeOrPin = True
+            else:
+                for pin in node.pins:
+                    if pin.asCircle().contains(e.pos()):
+                        pin.isSelected = True
+                        wasInsideANodeOrPin = True
+                        self.drawConnection = True
+                        self.connectionStartPoint = e.pos()
+                        self.connectionEndPoint = e.pos()
+
+        if wasInsideANodeOrPin == False:        
             self._nodes.append(NodeWidget(e.pos().x(), 
                                           e.pos().y()))
         super().mousePressEvent(e)
@@ -39,19 +59,29 @@ class GraphEditor(QAbstractScrollArea):
         self.viewport().update()
 
     def mouseMoveEvent(self, e):
+        if self.drawConnection:
+            self.connectionEndPoint = e.pos()
+        
         for node in self._nodes:
             if node.isSelected:
                 #for now i am just going to translate,
                 #eventually will want to offset position
                 #based on movement from last frame
                 node.setPos(e.pos().x(), e.pos().y())
+
         super().mouseMoveEvent(e)
         self.viewport().update()
     
     def paintEvent(self, e):
         super().paintEvent(e)
         painter = QPainter(self.viewport())
+
+        if self.drawConnection:
+            painter.setBrush(Qt.black)
+            painter.drawLine(self.connectionStartPoint, self.connectionEndPoint)
+
         for node in self._nodes:
+            painter.setBrush(node.color())
             # draw rect with text in the middle
             painter.fillRect(node.asRectF(), node.brush())
             painter.drawRect(node.asRect())
@@ -63,19 +93,19 @@ class GraphEditor(QAbstractScrollArea):
             for pin in node.pins:
                 w = 16
                 h = 16
-                if pin.isInput:
-                    painter.setBrush(Qt.green)
-                else:
-                    painter.setBrush(Qt.red)
-                pinPointX = node.pinPos(pin.isInput, i).x() if pin.isInput else node.pinPos(pin.isInput, i).x() + node.m_width
-                pinPointY = node.pinPos(pin.isInput, i).y()
+                
+                pinPointX = pin.pos().x()
+                pinPointY = pin.pos().y()
+
+                painter.setBrush(pin.color())
+
                 # maybe do later but just the circles looks good for now
                 #painter.fillRect(pinPointX,
                 #                 pinPointY, 
                 #                 w * 0.2, w * 0.5, 
                 #                 node.brush()
                 #                 )
-                if pin.isInput:
+                if pin.isInput():
                     painter.drawEllipse(pinPointX - 10, pinPointY, 10, 10)
                 else:
                     painter.drawEllipse(pinPointX, pinPointY, 10, 10)
