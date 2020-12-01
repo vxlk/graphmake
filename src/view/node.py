@@ -48,7 +48,7 @@ class NodeWidget(QWidget):
             pinPos = self.pinPos(pin.isInput(), i)
             pin.setPos(pinPos.x(), pinPos.y())
             i+=1
-            
+
     # getters
     def pos(self):
         return QPoint(self.m_x, self.m_y)
@@ -76,6 +76,26 @@ class NodeWidget(QWidget):
     def text(self):
         return self.backendNode.code
 
+    def inputPins(self):
+        inputList = []
+        for pin in self.pins:
+            if pin.isInput():
+                inputList.append(pin)
+        return inputList
+
+    def outputPins(self):
+        outputList = []
+        for pin in self.pins:
+            if pin.isInput() == False:
+                outputList.append(pin)
+        return outputList
+
+    def posContainsPin(self, pos):
+        for pin in self.pins:
+            if pin.asCircle().contains(pos):
+                return True
+        return False
+
     # should send num from 0 index
     def pinPos(self, isInput, num):
         denom = num + 2
@@ -84,7 +104,7 @@ class NodeWidget(QWidget):
             numerator = num
         else: 
             numerator = 1
-        return QPoint(self.pos().x(),
+        return QPoint(self.pos().x() - 10,
                       self.pos().y() + numerator/denom) if isInput else QPoint(self.pos().x() + self.m_width,
                                                                         self.pos().y() - numerator/denom)
 

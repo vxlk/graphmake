@@ -1,6 +1,9 @@
 TODO:
-1. Make potential connections only display when it is a proper input/output connection
 2. implement connections
+1. Make potential connections only display when it is a proper input/output connection
+
+BUGS:
+1. inputs position is wrong, need to update before drawing
 
 DEPENDS:
 qt 5 (download most recent version from website)

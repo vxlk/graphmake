@@ -14,6 +14,7 @@ class GraphEditor(QAbstractScrollArea):
         self.connectionStartPoint = QPoint(0,0)
         self.connectionEndPoint = QPoint(0,0)
         self.setMouseTracking(True)
+        
         # enable this later if needed if we need a
         # custom event loop
         #self.installEventFilter(self)
@@ -24,8 +25,19 @@ class GraphEditor(QAbstractScrollArea):
             text += node.text() + "\n"
         return text
 
+    def checkIfPinIsHit(self, pos):
+        for node in self._nodes:
+            if node.posContainsPin(pos):
+                return True
+        return False
+
     # event hooks    
     def mousePressEvent(self, e):
+        if self.checkIfPinIsHit(e.pos()):
+            if self.drawConnection:
+                # we have a connection
+                return
+
         # reset our draw event loop
         if self.drawConnection:
             self.drawConnection = False
@@ -115,10 +127,10 @@ class GraphEditor(QAbstractScrollArea):
                 #                 w * 0.2, w * 0.5, 
                 #                 node.brush()
                 #                 )
-                if pin.isInput():
-                    painter.drawEllipse(pinPointX - 10, pinPointY, pinWidth, pinHeight)
-                else:
-                    painter.drawEllipse(pinPointX, pinPointY, pinWidth, pinHeight)
+                #if pin.isInput():
+                    #painter.drawEllipse(pinPointX - 10, pinPointY, pinWidth, pinHeight)
+                #else:
+                painter.drawEllipse(pinPointX, pinPointY, pinWidth, pinHeight)
                 i+=1
         codeString = self.genCmakeText()
         self.updateSignal.emit(codeString)
