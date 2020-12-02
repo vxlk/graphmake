@@ -31,12 +31,29 @@ class GraphEditor(QAbstractScrollArea):
                 return True
         return False
 
+    def getPinAtPos(self, pos):
+        for node in self._nodes:
+            for pin in node.pins:
+                if pin.asCircle().contains(pos):
+                    return pin
+        return None
+
     # event hooks    
     def mousePressEvent(self, e):
         if self.checkIfPinIsHit(e.pos()):
             if self.drawConnection:
                 # we have a connection
-                return
+                pendingPin = self.getPinAtPos(e.pos())
+                beginningPin = self.getPinAtPos(self.connectionStartPoint)
+                if pendingPin is not None and beginningPin is not None:
+                    if (pendingPin.isInput() and not beginningPin.isInput()
+                    or not pendingPin.isInput() and beginningPin.isInput()):
+                        # inputPin = pendingPin if pendingPin.isInput() else  beginningPin
+                        # outputPin = pendingPin if not pendingPin.isInput() else beginningPin
+                        # going to draw a double line for now
+                        # todo: bad bad bad 
+                        pendingPin.addConnection(beginningPin)
+                        beginningPin.addConnection(pendingPin)
 
         # reset our draw event loop
         if self.drawConnection:
@@ -127,10 +144,14 @@ class GraphEditor(QAbstractScrollArea):
                 #                 w * 0.2, w * 0.5, 
                 #                 node.brush()
                 #                 )
-                #if pin.isInput():
-                    #painter.drawEllipse(pinPointX - 10, pinPointY, pinWidth, pinHeight)
-                #else:
+                
                 painter.drawEllipse(pinPointX, pinPointY, pinWidth, pinHeight)
                 i+=1
+
+                for conn in pin.connections:
+                    startPoint = conn.inputPos()
+                    endPoint = conn.outputPos()
+                    painter.setBrush(conn.color())
+                    painter.drawLine(startPoint, endPoint)
         codeString = self.genCmakeText()
         self.updateSignal.emit(codeString)

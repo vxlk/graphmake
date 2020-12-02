@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 #ignores the controller for now ... refactor later
 from model.pin_model import *
+from view.connection import ConnectionWidget
 
 class PinWidget(QWidget):
     def __init__(self, x, y, isInput = False, width = 10, height = 10):
@@ -16,6 +17,7 @@ class PinWidget(QWidget):
         self.isSelected = False
         #not going thru controller, dunno if big poop or not
         self.backendPin = Pin(isInput)
+        self.connections = []
 
         #default color
         self.m_color = Qt.black
@@ -52,6 +54,11 @@ class PinWidget(QWidget):
     def asCircle(self):
         return QGraphicsEllipseItem(self.m_x, self.m_y, 
                                     self.m_width, self.m_height)
+
+    def addConnection(self, otherPin):
+        inputPin = self if self.isInput else otherPin
+        outputPin = self if self.isInput == False else otherPin
+        self.connections.append(ConnectionWidget(inputPin, outputPin))
 
 def create_input_pin_widget(x, y):
     return PinWidget(x, y, True)

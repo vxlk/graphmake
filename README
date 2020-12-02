@@ -1,11 +1,12 @@
 TODO:
-2. implement connections
+2. implement connections backend
 1. Make potential connections only display when it is a proper input/output connection
+3. add pycache stuff to gitignore
 
 BUGS:
-1. inputs position is wrong, need to update before drawing
+1. pin highlighting is not checked (input can go input etc)
+2. highlighted pins linger after drawing a connection sometimes
+3. lines for connected nodes do not line up to the actual node
 
 DEPENDS:
-qt 5 (download most recent version from website)
 pyqt5 (pip install PyQt5)
-https://github.com/pyqt/examples/blob/_/src/10%20QPainter%20Python%20example/main.py
