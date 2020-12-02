@@ -97,14 +97,14 @@ class NodeWidget(QWidget):
         return False
 
     # should send num from 0 index
-    def pinPos(self, isInput, num):
+    def pinPos(self, isInput, num, size=10):
         denom = num + 2
         if denom > 4:
             denom = 2
             numerator = num
         else: 
             numerator = 1
-        return QPoint(self.pos().x() - 10,
+        return QPoint(self.pos().x() - size,
                       self.pos().y() + numerator/denom) if isInput else QPoint(self.pos().x() + self.m_width,
                                                                         self.pos().y() - numerator/denom)
 
