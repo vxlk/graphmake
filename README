@@ -1,7 +1,6 @@
 TODO:
-2. node database :)
-1. Make potential connections only display when it is a proper input/output connection
-3. add pycache stuff to gitignore
+1. node database :)
+2. Make potential connections only display when it is a proper input/output connection
 
 BUGS:
 1. pin highlighting is not checked (input can go input etc)
