@@ -60,6 +60,12 @@ class PinWidget(QWidget):
         outputPin = self if self.isInput == False else otherPin
         self.connections.append(ConnectionWidget(inputPin, outputPin))
 
+    def text(self):
+        text = ""
+        for output in self.outputConnections:
+            text += output.backendPin.outputCode
+        return text
+
 def create_input_pin_widget(x, y):
     return PinWidget(x, y, True)
 def create_output_pin_widget(x, y):

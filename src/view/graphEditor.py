@@ -22,7 +22,11 @@ class GraphEditor(QAbstractScrollArea):
     def genCmakeText(self):
         text = "" #reset the text before filling it in
         for node in self._nodes:
-            text += node.text() + "\n"
+            text += node.text()
+            for pin in node.pins:
+                for connection in pin.connections:
+                    text += connection.m_output.backendPin.outputCode
+            text += '\n'
         return text
 
     def checkIfPinIsHit(self, pos):
@@ -53,7 +57,7 @@ class GraphEditor(QAbstractScrollArea):
                         # going to draw a double line for now
                         # todo: bad bad bad 
                         pendingPin.addConnection(beginningPin)
-                        beginningPin.addConnection(pendingPin)
+                        #beginningPin.addConnection(pendingPin)
 
         # reset our draw event loop
         if self.drawConnection:

@@ -18,6 +18,7 @@ class Pin:
         self.num_conns = 0
         self.max_num_cons = 1
         self.isInput = isInput
+        self.outputCode = " output connection"
 
     def _type(self):
         return "Input" if self.isInput else "Output"
