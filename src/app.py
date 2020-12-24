@@ -3,6 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from view.graphEditor import GraphEditor
 from view.textEditor import TextEditor
+from util.settings import *
 
 # make Qapp
 app = QApplication([])
@@ -40,7 +41,7 @@ app.setApplicationName("Graphmake Alpha")
 window = MainWindow()
 window.addDockWidget(Qt.LeftDockWidgetArea, graphContainer)
 window.addDockWidget(Qt.RightDockWidgetArea, textContainer)
-file_path = None
+file_path = settings.Value(settings.kCmakeFileLoc)
 
 menu = window.menuBar().addMenu("&File")
 open_action = QAction("&Open")
