@@ -8,6 +8,7 @@ class Settings():
         self.settingsFilePath = self.appData + "\\settings.json"
         self.cmakeFilePath =  self.appData + "\\CmakeLists.txt"
         self.logFilePath = self.appData + "\\log.txt"
+        self.dbPath = __file__ + "\\model\\db\\db.xml"
 
         if not os.path.isdir(self.appData):
             os.mkdir(self.appData)
@@ -15,12 +16,14 @@ class Settings():
         # keys
         self.kCmakeFileLoc = 'cmake_file_location'
         self.kLogFileLoc = 'log_file_location'
+        self.kDbLocation = 'xml_database_location'
 
         # data
         self.data = {}
         self.data['settings'] = {}
         self.Add(self.kCmakeFileLoc, self.cmakeFilePath)
         self.Add(self.kLogFileLoc, self.logFilePath)
+        self.Add(self.kDbLocation, self.dbPath)
 
     def CmakeFile(self):
         return open(self.cmakeFilePath, 'w+')
