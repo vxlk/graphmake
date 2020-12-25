@@ -8,7 +8,7 @@ class Settings():
         self.settingsFilePath = self.appData + "\\settings.json"
         self.cmakeFilePath =  self.appData + "\\CmakeLists.txt"
         self.logFilePath = self.appData + "\\log.txt"
-        self.dbPath = __file__ + "\\model\\db\\db.xml"
+        self.dbPath = os.path.dirname(__file__) + "\\..\\model\\db\\db.xml"
 
         if not os.path.isdir(self.appData):
             os.mkdir(self.appData)
@@ -30,6 +30,9 @@ class Settings():
 
     def SettingsFile(self):
         return open(self.settingsFilePath, 'w+')
+
+    def DBFile(self):
+        return open(self.dbPath, 'r')
 
     # modifying this will not actually modify the value
     def Value(self, settingName):

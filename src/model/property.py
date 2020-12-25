@@ -14,3 +14,8 @@ class Property():
     # should prob check that it is ok to add
     def ReplaceEditableField(self, fieldIndex, code):
         self.editableFields[fieldIndex] = code
+
+    # stubbed for now, will eventually return the whole
+    # cmake string
+    def ToString(self):
+        return "not implemented"
