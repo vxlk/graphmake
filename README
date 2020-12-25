@@ -1,6 +1,5 @@
 TODO:
-1. make saving to cmake work
-1. node database :)
+1. node database (real cmake code) :)
 2. Make potential connections only display when it is a proper input/output connection
 
 BUGS:

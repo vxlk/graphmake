@@ -7,8 +7,8 @@ class Logger():
         self.contents = ''
 
         # types of log messages
-        self.critical = "CRITICAL:"
-        self.error = "ERROR:"
+        self.critical = "CRITICAL: "
+        self.error = "ERROR: "
         self.normal = ""
 
     def FilePath(self):
