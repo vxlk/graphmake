@@ -1,0 +1,11 @@
+<!-- Global cmake functions -->
+<global_cmake>
+    <!-- Supplies the function for the version of cmake used -->
+   <cmake_version>
+      <name cmake_minimum_required="cmake_minimum_required(VERSION %cmake_version%)"/>
+   </cmake_version>
+   <!-- Supplies the function for the global set function-->
+   <global_set>
+       <name set="set(%global_set%  %global_set_var%)"/>
+   </global_set>
+</global_cmake>

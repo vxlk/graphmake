@@ -1,0 +1,22 @@
+<!-- Contains a list of global variables for the various global functions of cmake -->
+<global_vars>
+<!-- Applies to the set(x,y) function - this is x -->
+   <global_set>
+      <CXX>
+         <name CMAKE_CXX_SET="CMAKE_CXX_STANDARD"/>
+      </CXX>
+   </global_set>
+   <!-- Applies to the set(x,y) function - this is y -->
+   <global_set_var>
+      <CXX>
+         <name CMAKE_CXX_STANDARD="98"/>
+         <name CMAKE_CXX_STANDARD="11"/>
+         <name CMAKE_CXX_STANDARD="17"/>
+         <name CMAKE_CXX_STANDARD="20"/>
+      </CXX>
+   </global_set_var>
+   <!-- Cmake versions available (these need to be installed on your pc) -->
+   <cmake_version>
+      <name cmake_version="3.15"/>
+   </cmake_version>
+</global_vars>

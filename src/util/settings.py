@@ -6,7 +6,7 @@ class Settings():
         # filepaths
         self.appData = os.getenv('APPDATA') + "\\Graphmake"
         self.settingsFilePath = self.appData + "\\settings.json"
-        self.cmakeFilePath =  self.appData + "\\CmakeLists.txt"
+        self.cmakeFilePath =  self.appData + "\\CMakeLists.txt"
         self.logFilePath = self.appData + "\\log.txt"
         self.dbPath = os.path.dirname(__file__) + "\\..\\model\\db\\db.xml"
 
