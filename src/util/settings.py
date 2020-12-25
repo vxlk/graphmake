@@ -18,7 +18,7 @@ class Settings():
 
         # data
         self.data = {}
-        self.data['settings'] = []
+        self.data['settings'] = {}
         self.Add(self.kCmakeFileLoc, self.cmakeFilePath)
         self.Add(self.kLogFileLoc, self.logFilePath)
 
@@ -30,20 +30,17 @@ class Settings():
 
     # modifying this will not actually modify the value
     def Value(self, settingName):
-        jsonObj = json.dumps(self.data)
-        return jsonObj[settingName]
+        return self.data['settings'][settingName]
 
     def Dump(self):
-        json.dump(self.data, self.SettingsFile())
+        json.dump(self.data, self.SettingsFile(), indent=4)
 
     def Add(self, key, value):
-        self.data['settings'].append({
-            key : value 
-        })
+        self.data['settings'][key] = value
         self.Dump()
 
     def Update(self, key, value):
-        jsonObj = json.loads(data)
+        jsonObj = json.load(data)
         jsonObj[key] = value
         self.data = json.load(jsonObj)
         self.Dump()

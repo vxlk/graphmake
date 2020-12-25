@@ -4,6 +4,12 @@ from PyQt5.QtCore import *
 from view.graphEditor import GraphEditor
 from view.textEditor import TextEditor
 from util.settings import *
+from util.logger import *
+
+# clear logs
+logger.ClearLogs()
+logger.Log("test")
+logger.Log("test2")
 
 # make Qapp
 app = QApplication([])
