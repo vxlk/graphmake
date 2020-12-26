@@ -1,4 +1,5 @@
 TODO:
+1. write converter
 1. node database (real cmake code) :)
 2. Make potential connections only display when it is a proper input/output connection
 

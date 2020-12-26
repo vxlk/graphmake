@@ -16,7 +16,7 @@ class Logger():
 
     def Log(self, msg, _type = ""):
         self.contents += (str(datetime.datetime.now()) + 
-                          " " + (_type + msg)) + "\n"
+                          " " + (_type + str(msg))) + "\n"
         with open(self.FilePath(), "w+") as f:
                 f.write(self.contents)
 
