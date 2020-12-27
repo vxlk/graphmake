@@ -65,6 +65,7 @@ class XMLUtil():
                 logger.Log("Attrib: ")
                 logger.Log(strAttrib)
                 returnedList.append(strAttrib)
+        # return the first for now, only temporary
         if len(returnedList) > 0:
             return returnedList[0]
         return ""

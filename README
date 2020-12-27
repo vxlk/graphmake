@@ -1,6 +1,5 @@
 TODO:
-1. write converter
-1. node database (real cmake code) :)
+1. create a ui to pick different node names
 2. Make potential connections only display when it is a proper input/output connection
 
 BUGS:
