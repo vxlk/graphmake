@@ -69,3 +69,37 @@ class XMLUtil():
         if len(returnedList) > 0:
             return returnedList[0]
         return ""
+
+    def Values(self, tag):
+        root = self.Root()
+        
+        _list = []
+        self.find_rec(root, tag, _list)
+
+        returnedList = []
+        for item in _list:
+            for attrib in item.attrib:
+                strAttrib = str(item.get(attrib))
+                returnedList.append(strAttrib)
+        # return the first for now, only temporary
+        if len(returnedList) > 0:
+            return returnedList
+        return []
+
+    def AllNodeNames(self):
+        logger.Log("All Node Names")
+        self.SetMode(self.funcMode)
+        root = Root()
+        str_names = []
+        for child in root.children():
+            logger.Log("name")
+            str_names.append(child.name)
+        return str_names
+
+    def AttributesForNodeName(self, str_node_name):
+        logger.Log("All Attributes for node " + str_node_name)
+        self.SetMode(self.funcMode)
+        values = Values(str_node_name)
+        for value in values:
+            logger.Log("Values: " + str(value))
+        return Values(str_node_name)

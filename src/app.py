@@ -8,8 +8,6 @@ from util.logger import *
 
 # clear logs
 logger.ClearLogs()
-logger.Log("test")
-logger.Log("test2")
 
 # make Qapp
 app = QApplication([])
