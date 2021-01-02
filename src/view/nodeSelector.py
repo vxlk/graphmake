@@ -14,10 +14,12 @@ class NodeSelectorTree():
         # might need to reorganize this later... for now just do an array
         self.items = []
         for item_name in self.AllNodeNames():
-            item = QTreeWidget(tree_impl)
-            item.setText(0, item_name)
-            item.setFlags(parent.flags() | Qt.ItemIsUserCheckable)
+            item = QTreeWidgetItem(self.tree_impl)
+            item.setText(0, item_name) # hardcoded 0 .. enforce 1 name?
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
             self.items.append(item) 
+        self.tree_impl.itemClicked.connect(self.onNodeItemClick)
+        self.tree_impl.topLevelItem(0).setSelected(True)
 
     def CurrentNodeName(self):
         return nodeManager.current_node_name
@@ -28,10 +30,5 @@ class NodeSelectorTree():
     def Widget(self):
         return self.tree_impl
 
-
-
-#class NodeSelectorWidget(QDockWidget):
- #   def __init__(self, string_name):
- #       super().__init__(string_name)
- #       tree_model = NodeSelectorTree()
- #       self.setWidget(tree_model.Widget())
+    def onNodeItemClick(self, item, index):
+        nodeManager.current_node_name = item.text(0) # hardcoded 0 .. enforce 1 name?

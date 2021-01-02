@@ -87,7 +87,6 @@ class XMLUtil():
         return []
 
     def AllNodeNames(self):
-        logger.Log("All Node Names")
         self.SetMode(self.funcMode)
         root = self.Root()
         str_names = []
@@ -96,7 +95,7 @@ class XMLUtil():
         return str_names
 
     def AttributesForNodeName(self, str_node_name):
-        logger.Log("All Attributes for node " + str(str_node_name))
+        logger.Log("All Attributes for node " + str(str_node_name), __name__)
         self.SetMode(self.funcMode)
         values = Values(str_node_name)
         for value in values:

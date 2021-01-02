@@ -5,16 +5,16 @@ from model.db.db_module.db_model import *
 class NodeManager():
     def __init__(self):
         self.node_names = []
-        self.attrib_name_dict = self.BuildNameDict()
+        self.attrib_name_dict = {}
+        self.BuildNameDict()
         self.current_node_name = "cmake_version" # this can be changed later
 
     def BuildNameDict(self):
-        logger.Log("BuildNameDict")
         name_array = database.AllNodeNames()
         logger.Log(name_array)
-        node_names = name_array
+        self.node_names = name_array
         for node_name in self.node_names:
-            attrib_name_dict[node_name] = Values(node_name)
+            self.attrib_name_dict[node_name] = database.parser.Values(node_name)
 
 nodeManager = NodeManager()
 
