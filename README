@@ -1,5 +1,5 @@
 TODO:
-1. create a ui to pick different node names
+1. Figure out a way to handle multiple vars in the database :O
 2. Make potential connections only display when it is a proper input/output connection
 
 BUGS:
