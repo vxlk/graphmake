@@ -19,10 +19,12 @@ class Logger():
                           " " + (_type + str(msg))) + "\n"
         with open(self.FilePath(), "w+") as f:
                 f.write(self.contents)
+                f.close()
 
     def ClearLogs(self):
         with open(self.FilePath(), "w+") as f:
             f.write("")
+            f.close()
 
 # global instance
 logger = Logger()

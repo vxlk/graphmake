@@ -17,7 +17,7 @@ class Database():
         return string
 
     def AllNodeNames(self):
-        return self.parser.AllNodeNames
+        return self.parser.AllNodeNames()
 
     def AttributesForNodeName(self, str_node_name):
         return self.parser.AllAttributes(str_node_name)

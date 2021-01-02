@@ -3,6 +3,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from view.graphEditor import GraphEditor
 from view.textEditor import TextEditor
+from view.nodeSelector import NodeSelectorTree
+from view.console import Console
 from util.settings import *
 from util.logger import *
 
@@ -14,8 +16,14 @@ app = QApplication([])
 
 # make the text and graph widgets themselves
 graph = GraphEditor()
+graph.setMinimumSize(512, 512)
 text = TextEditor()
+text.setMinimumSize(212, 212)
 text.connectGraph(graph)
+nodeTree = NodeSelectorTree()
+nodeTree.Widget().setMinimumSize(212, 212)
+console = Console()
+console.connectGraph(graph) # this could probably be reworked (depending on how we handle cmake entry)
 
 # create dock widget "containers" for the text and graph widgets
 graphContainer = QDockWidget("Graph Container")
@@ -25,6 +33,14 @@ graphContainer.setWidget(graph)
 textContainer = QDockWidget("Text Container")
 textContainer.setAllowedAreas(Qt.RightDockWidgetArea)
 textContainer.setWidget(text)
+
+nodeSelectorContainer = QDockWidget("Node Selector")
+nodeSelectorContainer.setAllowedAreas(Qt.LeftDockWidgetArea) 
+nodeSelectorContainer.setWidget(nodeTree.Widget())
+
+consoleContainer = QDockWidget("Console")
+consoleContainer.setAllowedAreas(Qt.BottomDockWidgetArea)
+consoleContainer.setWidget(console)
 
 # code for the app itself
 class MainWindow(QMainWindow):
@@ -43,8 +59,13 @@ class MainWindow(QMainWindow):
 
 app.setApplicationName("Graphmake Alpha")
 window = MainWindow()
+
 window.addDockWidget(Qt.LeftDockWidgetArea, graphContainer)
 window.addDockWidget(Qt.RightDockWidgetArea, textContainer)
+window.addDockWidget(Qt.LeftDockWidgetArea, nodeSelectorContainer)
+window.splitDockWidget(nodeSelectorContainer, graphContainer, Qt.Horizontal)
+window.addDockWidget(Qt.BottomDockWidgetArea, consoleContainer)
+
 file_path = settings.Value(settings.kCmakeFileLoc)
 
 menu = window.menuBar().addMenu("&File")
