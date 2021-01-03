@@ -7,6 +7,6 @@
    
    <!-- Supplies the function for the global set function-->
    <global_set
-        set="set(%CMAKE_CXX_SET%  %CMAKE_CXX_STANDARD20%)"
+        set="set(%global_set%  %global_set_var%)"
    />
 </global_cmake>

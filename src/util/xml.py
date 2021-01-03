@@ -28,6 +28,12 @@ class XMLUtil():
             self.modeVar = True
             self.modeFunc = False
 
+    def Mode(self):
+        if self.modeFunc == True:
+            return self.funcMode
+        else:
+            return self.varMode
+
     def Root(self):
         file = self.OpenFile()
         root = ET.parse(file).getroot()       
@@ -46,25 +52,50 @@ class XMLUtil():
             self.find_rec(item, element, result)
         return result
 
+    def find_children_rec(self, node, result):
+        for child in node:
+            result.append(child)
+            self.find_children_rec(child, result)
+        return result
+
+    def has_children(self, node):
+        # debug code included
+        child_list = list(node)
+        logger.Log("list of children:")
+        logger.Log(child_list)
+        return len(node) != 0
+
     def Value(self, tag):
         root = self.Root()
-        
+        logger.Log("mode: " + self.Mode())
         logger.Log("root " + str(root))
         
         _list = []
+        logger.Log("looking for tag: " + tag)
         self.find_rec(root, tag, _list)
 
-        logger.Log(str(_list))
+        logger.Log("parent list: " + str(_list))
 
         returnedList = []
         for item in _list:
-            for attrib in item.attrib:
-                logger.Log("Tag: ")
-                logger.Log(str(item.tag))
-                strAttrib = str(item.get(attrib))
-                logger.Log("Attrib: ")
-                logger.Log(strAttrib)
-                returnedList.append(strAttrib)
+            if (self.has_children(item)):
+                logger.Log("I have children : " + str(item))
+                childList = []
+                self.find_children_rec(item, childList)
+                for child in childList:
+                    for attrib in child.attrib:
+                        logger.Log("Tag: " + str(item.tag))
+                        strAttrib = str(child.get(attrib))
+                        logger.Log("Attrib: " + strAttrib)
+                        returnedList.append(strAttrib)
+            else:
+                logger.Log("I have no children : " + str(item))
+                for attrib in item.attrib:
+                    logger.Log("Tag: " + str(item.tag))
+                    strAttrib = str(item.get(attrib))
+                    logger.Log("Attrib: " + strAttrib)
+                    returnedList.append(strAttrib)
+
         # return the first for now, only temporary
         if len(returnedList) > 0:
             return returnedList[0]

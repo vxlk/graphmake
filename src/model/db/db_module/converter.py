@@ -30,6 +30,10 @@ def FillInArgs_impl(codeString):
     hasStarted = False
     skip = False
     varString = ""
+    varStrings = []
+    toBeReturned = codeString # handle multiple vars by cloning
+
+    # parse args out of line of code
     for char in codeString:
         if char == '%':
             if not hasStarted:
@@ -37,9 +41,16 @@ def FillInArgs_impl(codeString):
             else:
                 varString += str(char)
                 hasStarted = False
+                varStrings.append(varString)
+                varString = ""
         if hasStarted:
             varString += str(char)
-    varStringNoDelimiter = varString.replace('%', '')
-    actualVar = FindVar(varStringNoDelimiter)
-    toBeReturned = codeString.replace(varString, actualVar)
+
+    # find and replace var holders with the actual vars
+    for var in varStrings:
+        varStringNoDelimiter = var.replace('%', '')
+        actualVar = FindVar(varStringNoDelimiter)
+        logger.Log("actual variable: " + actualVar)
+        toBeReturned = toBeReturned.replace(var, actualVar)
+        logger.Log("code string: " + toBeReturned)
     return toBeReturned
