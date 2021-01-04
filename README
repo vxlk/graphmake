@@ -10,6 +10,7 @@ BUGS:
 2. highlighted pins linger after drawing a connection sometimes
 3. lines for connected nodes do not line up to the actual node
 4. names dont line up to nodes
+5. CLOSE FILES IN XML
 
 DEPENDS:
 pyqt5 (pip install PyQt5)
