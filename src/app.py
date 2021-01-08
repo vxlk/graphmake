@@ -5,6 +5,7 @@ from view.graphEditor import GraphEditor
 from view.textEditor import TextEditor
 from view.nodeSelector import NodeSelectorTree
 from view.console import Console
+from view.db_editor.dbEditorWindow import *
 from util.settings import *
 from util.logger import *
 
@@ -119,6 +120,21 @@ def show_about_dialog():
            "Copyright &copy; Company Inc.</p>"
     QMessageBox.about(window, "About Text Editor", text)
 about_action.triggered.connect(show_about_dialog)
+
+# --- Database Editor Window --- #
+
+db_editor = window.menuBar().addMenu("&Database Editor")
+db_editor_action = QAction("&Open")
+db_editor.addAction(db_editor_action)
+
+editor_widget = DBEditorWindow() # no parent is questionable
+editor_widget.hide()
+
+def show_about_dialog():
+    editor_widget.show()
+db_editor_action.triggered.connect(show_about_dialog)
+
+# --- Database Editor Window --- #
 
 # Force the style to be the same on all OSs:
 app.setStyle("Fusion")
