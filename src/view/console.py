@@ -13,10 +13,13 @@ class Console(QPlainTextEdit):
 
     # this could probably be reworked depending on whether i want manual writing in the cmake
     def connectGraph(self, graphEditor):
-        graphEditor.updateSignal.connect(self.onGraphUpdate)
+        graphEditor.updateSignal.connect(self.onUpdate)
+
+    def connectLog(self, log):
+        log.updateSignal.connect(self.onUpdate)
 
     @pyqtSlot(object)
-    def onGraphUpdate(self, text):
+    def onUpdate(self, text):
         # check settings file
         log_file = open(logger.FilePath(), "r")
         self.text = log_file.read()

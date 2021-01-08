@@ -1,10 +1,15 @@
+from PyQt5.QtCore import *
 from util.settings import *
 import datetime
 import sys
 
 #todo: error logging
-class Logger():
+class Logger(QObject):
+    
+    updateSignal = pyqtSignal(object)
+
     def __init__(self):
+        super().__init__()
         self.contents = ''
 
         # types of log messages
@@ -23,6 +28,7 @@ class Logger():
         with open(self.FilePath(), "w+") as f:
                 f.write(self.contents)
                 f.close()
+        self.updateSignal.emit(self.contents)
 
     def ClearLogs(self):
         with open(self.FilePath(), "w+") as f:

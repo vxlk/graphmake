@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from view.nodeSelector import *
+from view.console import *
 
 class DBEditorWidget(QWidget):
     def __init__(self, parent = None):
@@ -22,4 +23,12 @@ class DBEditorWindow(QMainWindow):
         self.db_editor = DBEditorWidget()
         self.db_editorContainer.setWidget(self.db_editor)
         self.addDockWidget(Qt.RightDockWidgetArea, self.db_editorContainer)
+
+    def connectConsole(self, console, logger):
+        editor_console = Console()
+        editor_console.text = console.text
+        editor_console.connectLog(logger)
+        consoleContainer = QDockWidget()
+        consoleContainer.setWidget(editor_console)
+        self.addDockWidget(Qt.BottomDockWidgetArea, consoleContainer)
         

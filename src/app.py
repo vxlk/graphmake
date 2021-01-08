@@ -24,7 +24,7 @@ text.connectGraph(graph)
 nodeTree = NodeSelectorTree()
 nodeTree.Widget().setMinimumSize(212, 212)
 console = Console()
-console.connectGraph(graph) # this could probably be reworked (depending on how we handle cmake entry)
+console.connectLog(logger) # this could probably be reworked (depending on how we handle cmake entry)
 
 # create dock widget "containers" for the text and graph widgets
 graphContainer = QDockWidget("Graph Container")
@@ -128,6 +128,7 @@ db_editor_action = QAction("&Open")
 db_editor.addAction(db_editor_action)
 
 editor_widget = DBEditorWindow() # no parent is questionable
+editor_widget.connectConsole(console, logger)
 editor_widget.hide()
 
 def show_about_dialog():
