@@ -8,6 +8,25 @@ class DBEditorWidget(QWidget):
     def __init__(self, parent = None):
         super().__init__(parent)
 
+        layout = QGridLayout(self)
+
+        #Type
+        func_label = QLabel(self)
+        func_label.setText("Function")
+        layout.addWidget(func_label)
+
+        func_input = QTextEdit(self)
+        layout.addWidget(func_input)
+
+        var_label = QLabel(self)
+        var_label.setText("Variable")
+        layout.addWidget(var_label)
+
+        var_input = QTextEdit(self)
+        layout.addWidget(var_input)
+
+        #Fields
+
 class DBEditorWindow(QMainWindow):
     def __init__(self, parent = None):
         super().__init__(parent)
