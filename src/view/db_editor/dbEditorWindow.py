@@ -82,8 +82,7 @@ class DBEditorWidget(QWidget):
         scroll_area.setWidgetResizable(True)
         scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
 
-        # something to do with layout and scrollbar interaction ...
-        layout.addWidget(var_widget)
+        layout.addWidget(scroll_area)
 
         insert_button = QPushButton()
         insert_button.setText("Insert Into Database")
