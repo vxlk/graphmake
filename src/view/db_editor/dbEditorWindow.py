@@ -19,9 +19,16 @@ class XMLVarButton(QWidget):
 
         self.remove_var_button = QPushButton()
         self.remove_var_button.setText("Remove")
+        self.remove_var_button.clicked.connect(lambda:self.removeSelf())
         self.layout.addWidget(self.remove_var_button)
 
         self.setLayout(self.layout)
+
+    def removeSelf(self):
+        #make a signal that emits here, the view widget
+        #can pick this up, and then delete the button 
+        #with the given name
+        self = None
 
 class XMLViewWidget(QWidget):
     def __init__(self, parent, view_str_name, enable_append = False):
@@ -52,14 +59,6 @@ class XMLViewWidget(QWidget):
             self.layout.addWidget(add_more_vars_button)
         
         self.setLayout(self.layout)
-        
-        """
-        self.scroll_area = QScrollArea()
-        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setWidget(self)
-        """
 
     def AddVarButton(self):
         var_button = XMLVarButton(self, "Variable " + str(self.varNum))
