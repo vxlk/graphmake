@@ -76,11 +76,14 @@ class DBEditorWidget(QWidget):
         layout.addWidget(func_widget)
 
         var_widget = XMLViewWidget(self, "Variable", True)
-        layout.addWidget(var_widget)
+
         scroll_area = QScrollArea()
         scroll_area.setWidget(var_widget)
         scroll_area.setWidgetResizable(True)
         scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+
+        # something to do with layout and scrollbar interaction ...
+        layout.addWidget(var_widget)
 
         insert_button = QPushButton()
         insert_button.setText("Insert Into Database")
