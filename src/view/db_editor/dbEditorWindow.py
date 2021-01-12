@@ -3,8 +3,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from view.nodeSelector import *
 from view.console import *
-# https://stackoverflow.com/questions/28818323/qscrollarea-not-working-as-expected-with-qwidget-and-qvboxlayout
+
 class XMLVarButton(QWidget):
+
+    delete_me = pyqtSignal(object)
+
     def __init__(self, parent, name_str):
         super().__init__(parent)
 
@@ -12,6 +15,7 @@ class XMLVarButton(QWidget):
 
         self.label = QLabel()
         self.label.setText(name_str)
+        self.name = name_str
         self.layout.addWidget(self.label)
 
         self.var_input = QTextEdit(self)
@@ -28,7 +32,7 @@ class XMLVarButton(QWidget):
         #make a signal that emits here, the view widget
         #can pick this up, and then delete the button 
         #with the given name
-        self = None
+        self.delete_me.emit(self.name)
 
 class XMLViewWidget(QWidget):
     def __init__(self, parent, view_str_name, enable_append = False):
@@ -36,6 +40,7 @@ class XMLViewWidget(QWidget):
         # todo: dynamic variables
         self.layout = QGridLayout(self)
         self.varNum = 1
+        self.varButtons = []
 
         if enable_append == False:
             # Type
@@ -62,8 +67,20 @@ class XMLViewWidget(QWidget):
 
     def AddVarButton(self):
         var_button = XMLVarButton(self, "Variable " + str(self.varNum))
+        var_button.delete_me.connect(self.onDelete)
         self.varNum += 1
         self.layout.addWidget(var_button)
+        self.varButtons.append(var_button)
+
+    @pyqtSlot(object)
+    def onDelete(self, text):
+        for var_button in self.varButtons:
+            print(var_button.name)
+            if var_button.name == text:
+                print(var_button.name + "deleted")
+                var_button.deleteLater()
+                var_button = None
+        
 
 class DBEditorWidget(QWidget):
     def __init__(self, parent = None):
