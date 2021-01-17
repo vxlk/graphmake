@@ -19,9 +19,19 @@ class NodeSelectorTree():
 
         prev_node_level = 0
         prev_dict = {}
+        prev_node_name = ""
         level_list = nodeManager.BuildLevelList()
         for item_name in level_list.keys():
             current_level = level_list[item_name]
+
+             # create new parent
+            if current_level > prev_node_level:
+                prev_node_level = current_level
+                prev_dict[current_level] = prev_node_name
+            elif current_level < prev_node_level:
+                prev_node_level = current_level
+                prev_dict[current_level] = item_name
+
             if current_level in prev_dict:
                 item = QTreeWidgetItem(self.FindTreeItem(prev_dict[current_level]))
             # root
@@ -30,33 +40,7 @@ class NodeSelectorTree():
             item.setText(0, item_name) # hardcoded 0 .. enforce 1 name?
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
 
-             # create new parent
-            if current_level > prev_node_level:
-                prev_node_level = current_level
-                prev_dict[current_level] = item_name
-            elif current_level < prev_node_level:
-                prev_node_level = current_level
-                #prev_dict[current_level-1] = item_name
-            
-            """
-            # create new parent
-            if level_list[item_name] > prev_node_level:
-                prev_node_level = level_list[item_name]
-                prev_node_name = item_name
-                node = self.FindTreeItem(prev_node_name)
-                if (node == self.tree_impl):
-                    node.insertTopLevelItem(0, item)
-                else:
-                    node.insertChild(0, item)
-            elif level_list[item_name] == prev_node_level:
-                self.FindTreeItem(prev_node_name).insertChild(0, item)
-            else:
-                prev_node_level = 0
-                prev_node_name = ""
-                # make not clickable eventually
-                item.setFlags(item.flags())
-                self.tree_impl.insertTopLevelItem(0, item)
-            """
+            prev_node_name = item_name
             self.items.append(item)
 
         self.tree_impl.itemClicked.connect(self.onNodeItemClick)
