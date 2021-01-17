@@ -6,7 +6,9 @@ class XMLConverter():
         self.dummy = ""
 
     def ConvertToNode(self, node):
+        logger.Log(node)
         nodeString = str(node)
+        logger.Log(nodeString + "<- before args")
         toBeReturned = self.FillInArgs(nodeString)
         return toBeReturned
 
@@ -53,4 +55,5 @@ def FillInArgs_impl(codeString):
         logger.Log("actual variable: " + actualVar)
         toBeReturned = toBeReturned.replace(var, actualVar)
         logger.Log("code string: " + toBeReturned)
+    logger.Log(toBeReturned + " <- with args filled in")
     return toBeReturned
