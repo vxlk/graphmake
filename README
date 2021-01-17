@@ -1,6 +1,6 @@
 TODO:
 db editor widget
-1. var selection
+1. var selection (proper var implementation)
 2. implement connections for nodes / vars
 3. add stuff to db
 4. make a find all function in the log
