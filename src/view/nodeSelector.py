@@ -3,6 +3,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from model.node_model import *
 
+from util.xml import *
+
 # for now i shall make a list of the names, eventually i want pictures
 # like draw.io has
 
@@ -13,13 +15,56 @@ class NodeSelectorTree():
         self.tree_impl.resize(128, self.tree_impl.height()) #todo: figure out size
         # might need to reorganize this later... for now just do an array
         self.items = []
-        for item_name in self.AllNodeNames():
-            item = QTreeWidgetItem(self.tree_impl)
+        self.tree_impl.setColumnCount(1)
+
+        prev_node_level = 0
+        prev_dict = {}
+        level_list = nodeManager.BuildLevelList()
+        for item_name in level_list.keys():
+            current_level = level_list[item_name]
+            if current_level in prev_dict:
+                item = QTreeWidgetItem(self.FindTreeItem(prev_dict[current_level]))
+            # root
+            else:
+                item = QTreeWidgetItem(self.FindTreeItem(""))
             item.setText(0, item_name) # hardcoded 0 .. enforce 1 name?
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-            self.items.append(item) 
+
+             # create new parent
+            if current_level > prev_node_level:
+                prev_node_level = current_level
+                prev_dict[current_level] = item_name
+            elif current_level < prev_node_level:
+                prev_node_level = current_level
+                #prev_dict[current_level-1] = item_name
+            
+            """
+            # create new parent
+            if level_list[item_name] > prev_node_level:
+                prev_node_level = level_list[item_name]
+                prev_node_name = item_name
+                node = self.FindTreeItem(prev_node_name)
+                if (node == self.tree_impl):
+                    node.insertTopLevelItem(0, item)
+                else:
+                    node.insertChild(0, item)
+            elif level_list[item_name] == prev_node_level:
+                self.FindTreeItem(prev_node_name).insertChild(0, item)
+            else:
+                prev_node_level = 0
+                prev_node_name = ""
+                # make not clickable eventually
+                item.setFlags(item.flags())
+                self.tree_impl.insertTopLevelItem(0, item)
+            """
+            self.items.append(item)
+
         self.tree_impl.itemClicked.connect(self.onNodeItemClick)
         self.tree_impl.topLevelItem(0).setSelected(True)
+
+        for item in self.items:
+            print(item.parent())
+        #nodeManager.BuildLevelList()
 
     def CurrentNodeName(self):
         return nodeManager.current_node_name
@@ -32,3 +77,12 @@ class NodeSelectorTree():
 
     def onNodeItemClick(self, item, index):
         nodeManager.current_node_name = item.text(0) # hardcoded 0 .. enforce 1 name?
+
+    def FindTreeItem(self, str_node_name):
+        for item in self.items:
+            #print(item.text(0) + "," + str_node_name)
+            if item.text(0) == str_node_name:
+                #print("found")
+                return item
+        #print("not found")
+        return self.tree_impl

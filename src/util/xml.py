@@ -65,6 +65,10 @@ class XMLUtil():
         logger.Log(child_list)
         return len(node) != 0
 
+    def has_attrib(self, node):
+        attrib_list = list(node.attrib)
+        return len(attrib_list) != 0 
+
     def Value(self, tag):
         root = self.Root()
         logger.Log("mode: " + self.Mode())
@@ -136,6 +140,21 @@ class XMLUtil():
                     str_names.append(attrib)
                     
         return str_names
+
+
+    def LevelList(self, level_list_dict, int_level = 0, node = None):
+        self.SetMode(self.funcMode)
+        if (node is None):
+            node = self.Root()
+        for child in node:
+            level = int_level + 1
+            level_list_dict[child.tag] = level
+            self.LevelList(level_list_dict, level, child)
+
+            if self.has_attrib(child):
+                level += 1
+                for attrib in child.attrib:
+                    level_list_dict[attrib] = level
 
     def AttributesForNodeName(self, str_node_name):
         logger.Log("All Attributes for node " + str(str_node_name), __name__)

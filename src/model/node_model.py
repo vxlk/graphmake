@@ -16,6 +16,12 @@ class NodeManager():
         for node_name in self.node_names:
             self.attrib_name_dict[node_name] = database.parser.Values(node_name)
 
+    def BuildLevelList(self):
+        level_list = {}
+        database.parser.LevelList(level_list)
+        print(level_list)
+        return level_list
+
 nodeManager = NodeManager()
 
 # Represents a node from the backend, a node will be shown on the front end by a rectangle

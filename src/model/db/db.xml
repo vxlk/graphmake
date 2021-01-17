@@ -11,9 +11,9 @@
    />
 
    <scripting>
-   <language
-      break="break()"
-      continue="continue()"
-   />
+      <language
+         break="break()"
+         continue="continue()"
+      />
    </scripting>
 </global_cmake>
