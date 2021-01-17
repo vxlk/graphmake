@@ -9,4 +9,11 @@
    <global_set
         set="set(%global_set%  %global_set_var%)"
    />
+
+   <scripting>
+   <language
+      break="break()"
+      continue="continue()"
+   />
+   </scripting>
 </global_cmake>

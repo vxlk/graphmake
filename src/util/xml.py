@@ -122,7 +122,19 @@ class XMLUtil():
         root = self.Root()
         str_names = []
         for child in root:
+            child_array = []
+            self.find_children_rec(child, child_array)
+            # todo: handle tags better
             str_names.append(child.tag)
+
+            for attrib in child.attrib:
+                str_names.append(attrib)
+
+            for childs_child in child_array:
+                str_names.append(childs_child.tag)
+                for attrib in childs_child.attrib:
+                    str_names.append(attrib)
+                    
         return str_names
 
     def AttributesForNodeName(self, str_node_name):
