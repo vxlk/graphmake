@@ -17,6 +17,8 @@ class NodeSelectorTree():
         self.items_func = []
         self.items_var = []
         self.tree_impl.setColumnCount(2)
+        
+        self.selected_type = nodeManager.selected_type_function
 
         prev_node_level = 0
         prev_dict = {}
@@ -84,8 +86,21 @@ class NodeSelectorTree():
     def Widget(self):
         return self.tree_impl
 
+    # the slot that happens when something in the tree view is clicked,
+    # until the tree is redesigned, it will do some arbitrary dumb checks
+    # to decide whether it is a var or a function
     def onNodeItemClick(self, item, index):
-        nodeManager.current_node_name = item.text(0) # hardcoded 0 .. enforce 1 name?
+        node_name = ""
+        # is a var
+        if (item.text(0) == ""):
+            node_name = item.text(1)
+            self.selected_type = nodeManager.selected_type_variable
+        else:
+            node_name = item.text(0)
+            self.selected_type = nodeManager.selected_type_function
+
+        nodeManager.current_node_type = self.selected_type
+        nodeManager.current_node_name = node_name # hardcoded 0 .. enforce 1 name?
 
     def FindTreeItemFunction(self, str_node_name):
         for item in self.items_func:

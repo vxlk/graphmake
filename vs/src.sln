@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.30225.117
+VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "graphmake", "graphmake.pyproj", "{76A71238-4EFA-4F31-B5A9-89EFE610760D}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "src", "src.pyproj", "{3F265821-8EC0-47A8-A3F1-85D882B06AF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,13 +11,13 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{76A71238-4EFA-4F31-B5A9-89EFE610760D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76A71238-4EFA-4F31-B5A9-89EFE610760D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F265821-8EC0-47A8-A3F1-85D882B06AF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F265821-8EC0-47A8-A3F1-85D882B06AF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {30928E27-CB80-4A36-A9E1-0DE6435D66FB}
+		SolutionGuid = {5CF79DAF-FC23-4F43-9621-1A2B42E1158B}
 	EndGlobalSection
 EndGlobal

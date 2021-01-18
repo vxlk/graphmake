@@ -2,7 +2,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 #ignores the controller for now ... refactor later
-from model.node_model import Node
+from model.node_model import *
 from view.pin import *
 
 # represents a node in gui view, can communicate with the model through the controller by name (for now name == guid)
@@ -26,8 +26,12 @@ class NodeWidget(QWidget):
         inputPos = self.pinPos(True, 0)
         self.pins.append(create_input_pin_widget(inputPos.x(), inputPos.y()))
         
+        self.m_color = None
         #default color
-        self.m_color = Qt.blue
+        if nodeManager.current_node_type == nodeManager.selected_type_function:
+            self.m_color = Qt.blue
+        else:
+            self.m_color = Qt.red
         self.m_brush = QBrush(Qt.blue)
         self.m_brush.setStyle(Qt.SolidPattern)
 

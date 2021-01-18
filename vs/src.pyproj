@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3f265821-8ec0-47a8-a3f1-85d882b06af7}</ProjectGuid>
+    <ProjectHome>..\src\</ProjectHome>
+    <StartupFile>app.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="app.py" />
+    <Compile Include="controller\controller.py" />
+    <Compile Include="controller\__init__.py" />
+    <Compile Include="model\connection_model.py" />
+    <Compile Include="model\db\db_module\converter.py" />
+    <Compile Include="model\db\db_module\db_model.py" />
+    <Compile Include="model\db\db_module\__init__.py" />
+    <Compile Include="model\node_model.py" />
+    <Compile Include="model\pin_model.py" />
+    <Compile Include="model\property.py" />
+    <Compile Include="model\property_loader.py" />
+    <Compile Include="model\__init__.py" />
+    <Compile Include="util\logger.py" />
+    <Compile Include="util\settings.py" />
+    <Compile Include="util\xml.py" />
+    <Compile Include="view\connection.py" />
+    <Compile Include="view\console.py" />
+    <Compile Include="view\db_editor\dbEditorWindow.py" />
+    <Compile Include="view\db_editor\__init__.py" />
+    <Compile Include="view\graphEditor.py" />
+    <Compile Include="view\node.py" />
+    <Compile Include="view\nodeSelector.py" />
+    <Compile Include="view\pin.py" />
+    <Compile Include="view\textEditor.py" />
+    <Compile Include="view\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="controller" />
+    <Folder Include="model" />
+    <Folder Include="model\db\" />
+    <Folder Include="model\db\db_module" />
+    <Folder Include="util" />
+    <Folder Include="view" />
+    <Folder Include="view\db_editor" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>

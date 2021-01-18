@@ -34,6 +34,14 @@ class XMLUtil():
         else:
             return self.varMode
 
+    def FlipMode(self):
+        if self.modeFunc == True:
+            self.modeFunc = False
+            self.modeVar = True
+        else:
+            self.modeFunc = True
+            self.modeVar = False
+
     def Root(self):
         file = self.OpenFile()
         root = ET.parse(file).getroot()       
@@ -79,6 +87,15 @@ class XMLUtil():
         return len(attrib_list) != 0 
 
     def Value(self, tag):
+        toBeReturned = ""
+        toBeReturned = self.FindNode_impl(tag)
+        # needs to be reworked ... check the other database if no match
+        if (toBeReturned == ""):
+            self.FlipMode()
+            toBeReturned = self.FindNode_impl(tag)
+        return toBeReturned
+
+    def FindNode_impl(self, tag):   
         root = self.Root()
         logger.Log("mode: " + self.Mode())
         logger.Log("root " + str(root))
@@ -111,6 +128,8 @@ class XMLUtil():
         # return the first for now, only temporary
         if len(returnedList) > 0:
             return returnedList[0]
+
+        # not found
         return ""
 
     def Values(self, tag):

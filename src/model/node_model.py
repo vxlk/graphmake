@@ -7,7 +7,12 @@ class NodeManager():
         self.node_names = []
         self.attrib_name_dict = {}
         self.BuildNameDict()
+
+        self.selected_type_function = "Function"
+        self.selected_type_variable = "Variable"
+
         self.current_node_name = "cmake_version" # this can be changed later
+        self.current_node_type = self.selected_type_function
 
     def BuildNameDict(self):
         name_array = database.AllNodeNames()
@@ -32,6 +37,9 @@ class NodeManager():
 nodeManager = NodeManager()
 
 # Represents a node from the backend, a node will be shown on the front end by a rectangle
+# for now i am electing to represent both variables
+# and functions under the single node class: subject
+# to change
 class Node(QObject):
     def __init__(self):
         super().__init__()
