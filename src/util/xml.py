@@ -58,6 +58,15 @@ class XMLUtil():
             self.find_children_rec(child, result)
         return result
 
+    def find_nodes_with_attrib(self, node_root, attr_name_str, result):
+        for child in node_root:
+            if child.tag == attr_name_str:
+                result.append(child)
+            for attrib in child.attrib:
+                if attrib == attr_name_str:
+                    result.append(child)
+            self.find_nodes_with_attrib(child, attr_name_str, result)
+
     def has_children(self, node):
         # debug code included
         child_list = list(node)
@@ -76,7 +85,7 @@ class XMLUtil():
         
         _list = []
         logger.Log("looking for tag: " + tag)
-        self.find_rec(root, tag, _list)
+        self.find_nodes_with_attrib(root, tag, _list)
 
         logger.Log("parent list: " + str(_list))
 
@@ -95,10 +104,9 @@ class XMLUtil():
             else:
                 logger.Log("I have no children : " + str(item))
                 for attrib in item.attrib:
-                    logger.Log("Tag: " + str(item.tag))
                     strAttrib = str(item.get(attrib))
-                    logger.Log("Attrib: " + strAttrib)
-                    returnedList.append(strAttrib)
+                    if attrib == tag:
+                        returnedList.append(strAttrib)
 
         # return the first for now, only temporary
         if len(returnedList) > 0:
@@ -143,7 +151,6 @@ class XMLUtil():
 
 
     def LevelList(self, level_list_dict, int_level = 0, node = None):
-        self.SetMode(self.funcMode)
         if (node is None):
             node = self.Root()
         for child in node:

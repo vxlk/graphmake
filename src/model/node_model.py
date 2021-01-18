@@ -16,7 +16,14 @@ class NodeManager():
         for node_name in self.node_names:
             self.attrib_name_dict[node_name] = database.parser.Values(node_name)
 
-    def BuildLevelList(self):
+    def BuildLevelListFunctions(self):
+        database.parser.SetMode(database.parser.funcMode)
+        level_list = {}
+        database.parser.LevelList(level_list)
+        return level_list
+
+    def BuildLevelListVariables(self):
+        database.parser.SetMode(database.parser.varMode)
         level_list = {}
         database.parser.LevelList(level_list)
         print(level_list)

@@ -12,15 +12,43 @@ class NodeSelectorTree():
     def __init__(self):
         super().__init__()
         self.tree_impl = QTreeWidget()
-        self.tree_impl.resize(128, self.tree_impl.height()) #todo: figure out size
+        self.tree_impl.resize(250, self.tree_impl.height()) #todo: figure out size
         # might need to reorganize this later... for now just do an array
-        self.items = []
-        self.tree_impl.setColumnCount(1)
+        self.items_func = []
+        self.items_var = []
+        self.tree_impl.setColumnCount(2)
 
         prev_node_level = 0
         prev_dict = {}
         prev_node_name = ""
-        level_list = nodeManager.BuildLevelList()
+        level_list = nodeManager.BuildLevelListFunctions()
+        for item_name in level_list.keys():
+            current_level = level_list[item_name]
+            # ------- functions --------
+             # create new parent
+            if current_level > prev_node_level:
+                prev_node_level = current_level
+                prev_dict[current_level] = prev_node_name
+            elif current_level < prev_node_level:
+                prev_node_level = current_level
+                prev_dict[current_level] = item_name
+
+            if current_level in prev_dict:
+                item = QTreeWidgetItem(self.FindTreeItemFunction(prev_dict[current_level]))
+            # root
+            else:
+                item = QTreeWidgetItem(self.FindTreeItemFunction(""))
+            item.setText(0, item_name) # hardcoded 0 .. enforce 1 name?
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+
+            prev_node_name = item_name
+            self.items_func.append(item)
+
+            # -------- variables ---------
+        prev_node_level = 0
+        prev_dict = {}
+        prev_node_name = ""
+        level_list = nodeManager.BuildLevelListVariables()
         for item_name in level_list.keys():
             current_level = level_list[item_name]
 
@@ -33,22 +61,19 @@ class NodeSelectorTree():
                 prev_dict[current_level] = item_name
 
             if current_level in prev_dict:
-                item = QTreeWidgetItem(self.FindTreeItem(prev_dict[current_level]))
+                item = QTreeWidgetItem(self.FindTreeItemVariable(prev_dict[current_level]))
             # root
             else:
-                item = QTreeWidgetItem(self.FindTreeItem(""))
-            item.setText(0, item_name) # hardcoded 0 .. enforce 1 name?
+                item = QTreeWidgetItem(self.FindTreeItemVariable(""))
+            item.setText(1, item_name) # hardcoded 0 .. enforce 1 name?
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
 
             prev_node_name = item_name
-            self.items.append(item)
+            self.items_var.append(item)
+
 
         self.tree_impl.itemClicked.connect(self.onNodeItemClick)
         self.tree_impl.topLevelItem(0).setSelected(True)
-
-        for item in self.items:
-            print(item.parent())
-        #nodeManager.BuildLevelList()
 
     def CurrentNodeName(self):
         return nodeManager.current_node_name
@@ -62,10 +87,19 @@ class NodeSelectorTree():
     def onNodeItemClick(self, item, index):
         nodeManager.current_node_name = item.text(0) # hardcoded 0 .. enforce 1 name?
 
-    def FindTreeItem(self, str_node_name):
-        for item in self.items:
+    def FindTreeItemFunction(self, str_node_name):
+        for item in self.items_func:
             #print(item.text(0) + "," + str_node_name)
             if item.text(0) == str_node_name:
+                #print("found")
+                return item
+        #print("not found")
+        return self.tree_impl
+
+    def FindTreeItemVariable(self, str_node_name):
+        for item in self.items_var:
+            #print(item.text(0) + "," + str_node_name)
+            if item.text(1) == str_node_name:
                 #print("found")
                 return item
         #print("not found")
