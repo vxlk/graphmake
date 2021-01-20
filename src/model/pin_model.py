@@ -14,7 +14,6 @@ class Pin:
         self.guid = uuid.uuid4()
         self.connection_guids = []
         self.name = "Input" if isInput else "Output"
-        self.code = ""
         self.num_conns = 0
         self.max_num_cons = 1
         self.isInput = isInput

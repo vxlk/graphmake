@@ -8,7 +8,7 @@ from model.pin_model import *
 from view.connection import ConnectionWidget
 
 class PinWidget(QWidget):
-    def __init__(self, x, y, isInput = False, width = 10, height = 10):
+    def __init__(self, x, y, node_owner, isInput = False, width = 10, height = 10):
         super().__init__()
         self.m_x = x
         self.m_y = y
@@ -18,6 +18,9 @@ class PinWidget(QWidget):
         #not going thru controller, dunno if big poop or not
         self.backendPin = Pin(isInput)
         self.connections = []
+
+        self.node_owner = node_owner
+        self.connected_nodes = []
 
         #default color
         self.m_color = Qt.black
@@ -59,14 +62,15 @@ class PinWidget(QWidget):
         inputPin = self if self.isInput else otherPin
         outputPin = self if self.isInput == False else otherPin
         self.connections.append(ConnectionWidget(inputPin, outputPin))
+        outputPin.connected_nodes.append(outputPin.node_owner)
 
     def text(self):
         text = ""
-        for output in self.outputConnections:
-            text += output.backendPin.outputCode
+        #for output in self.outputConnections:
+         #   text += output.backendPin.outputCode
         return text
 
-def create_input_pin_widget(x, y):
-    return PinWidget(x, y, True)
-def create_output_pin_widget(x, y):
-    return PinWidget(x, y, False)
+def create_input_pin_widget(x, y, node_owner):
+    return PinWidget(x, y, node_owner, True)
+def create_output_pin_widget(x, y, node_owner):
+    return PinWidget(x, y, node_owner, False)

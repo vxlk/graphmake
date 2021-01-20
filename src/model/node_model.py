@@ -46,8 +46,16 @@ class Node(QObject):
         self.name = nodeManager.current_node_name
         self.code = database.Node(self.name)
         self.guid = uuid.uuid4()
+        self.input_pins = []
+        self.is_function_node = True
 
     def SetNodeName(self, str_name):
         self.name = str_name
+
+    def AddInput(self, other_node):
+        self.input_pins.append(other_node)
+
+    def RemoveInput(self, other_node):
+        self.input_pins.append(other_node)
 
 

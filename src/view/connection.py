@@ -15,7 +15,7 @@ class ConnectionWidget(QWidget):
         self.isSelected = False
         #default color
         self.m_color = Qt.black
-        self.m_brush = QBrush(self.m_color)
+        self.m_brush = QBrush(self.m_color)        
 
     # setters
     def setColor(self, color):

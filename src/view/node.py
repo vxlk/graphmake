@@ -21,10 +21,10 @@ class NodeWidget(QWidget):
         self.pins = []
         # add an output
         outputPos = self.pinPos(False, 0)
-        self.pins.append(create_output_pin_widget(outputPos.x(), outputPos.y()))
+        self.pins.append(create_output_pin_widget(outputPos.x(), outputPos.y(), self.backendNode))
         # add an input
         inputPos = self.pinPos(True, 0)
-        self.pins.append(create_input_pin_widget(inputPos.x(), inputPos.y()))
+        self.pins.append(create_input_pin_widget(inputPos.x(), inputPos.y(), self.backendNode))
         
         self.m_color = None
         #default color
@@ -78,7 +78,11 @@ class NodeWidget(QWidget):
         return self.backendNode.name
 
     def text(self):
-        return self.backendNode.code
+        toBeReturned = self.backendNode.code
+        # add pin text
+        for connection in self.backendNode.input_pins:
+            toBeReturned += connection.node_owner.code
+        return toBeReturned
 
     def inputPins(self):
         inputList = []
@@ -112,4 +116,8 @@ class NodeWidget(QWidget):
                       self.pos().y() + numerator/denom) if isInput else QPoint(self.pos().x() + self.m_width,
                                                                         self.pos().y() - numerator/denom)
 
-        
+    def AddConnection(self, other_node):
+        self.backendNode.AddInput(other_node)
+
+    def RemoveConnection(self, other_node):
+        self.backendNode.RemoveInput(other_node)

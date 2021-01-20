@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from view.node import NodeWidget
+from model.node_model import * # access the node manager
 
 class GraphEditor(QAbstractScrollArea):
     
@@ -22,11 +23,9 @@ class GraphEditor(QAbstractScrollArea):
     def genCmakeText(self):
         text = "" #reset the text before filling it in
         for node in self._nodes:
-            text += node.text()
-            for pin in node.pins:
-                for connection in pin.connections:
-                    text += connection.m_output.backendPin.outputCode
-            text += '\n'
+            if node.backendNode.is_function_node:
+                text += node.text()
+                text += '\n'
         return text
 
     def checkIfPinIsHit(self, pos):
@@ -52,11 +51,12 @@ class GraphEditor(QAbstractScrollArea):
                 if pendingPin is not None and beginningPin is not None:
                     if (pendingPin.isInput() and not beginningPin.isInput()
                     or not pendingPin.isInput() and beginningPin.isInput()):
-                        # inputPin = pendingPin if pendingPin.isInput() else  beginningPin
-                        # outputPin = pendingPin if not pendingPin.isInput() else beginningPin
+                        inputPin = pendingPin if pendingPin.isInput() else  beginningPin
+                        outputPin = pendingPin if not pendingPin.isInput() else beginningPin
                         # going to draw a double line for now
                         # todo: bad bad bad 
                         pendingPin.addConnection(beginningPin)
+                        pendingPin.node_owner.AddInput(beginningPin)
                         #beginningPin.addConnection(pendingPin)
 
         # reset our draw event loop
@@ -79,9 +79,11 @@ class GraphEditor(QAbstractScrollArea):
                         self.connectionStartPoint = e.pos()
                         self.connectionEndPoint = e.pos()
 
-        if wasInsideANodeOrPin == False:        
-            self._nodes.append(NodeWidget(e.pos().x(), 
-                                          e.pos().y()))
+        if wasInsideANodeOrPin == False:
+            newNodeWidget = NodeWidget(e.pos().x(), e.pos().y())
+            newNodeWidget.backendNode.is_function_node = nodeManager.current_node_type == nodeManager.selected_type_function       
+            self._nodes.append(newNodeWidget)
+                
         super().mousePressEvent(e)
         self.viewport().update()
     
