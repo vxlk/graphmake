@@ -16,6 +16,12 @@ class Database():
             return "None"
         return string
 
+    def NodeParent(self, name_string):
+        # we will be using "parent below root" nodes to classify variables by type
+        result_str = ""
+        self.parser.ParentBelowRoot(name_string, result_str)
+        return result_str
+
     def AllNodeNames(self):
         return self.parser.AllNodeNames()
 

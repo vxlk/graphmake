@@ -43,11 +43,20 @@ nodeManager = NodeManager()
 class Node(QObject):
     def __init__(self):
         super().__init__()
+
+        # set db path to the right direction
+        if nodeManager.current_node_type == nodeManager.selected_type_function:
+            database.parser.SetMode(database.parser.funcMode)
+        else:
+            database.parser.SetMode(database.parser.varMode)
+
         self.name = nodeManager.current_node_name
         self.code = database.Node(self.name)
         self.guid = uuid.uuid4()
         self.input_pins = []
         self.is_function_node = True
+        self.parent_name = database.NodeParent(self.name)
+        print(self.parent_name)
 
     def SetNodeName(self, str_name):
         self.name = str_name

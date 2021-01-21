@@ -47,6 +47,46 @@ class XMLUtil():
         root = ET.parse(file).getroot()       
         return root
 
+    def RootName(self):
+        root_node = Root()
+        return root_node.tag
+
+    # returns the name of the parent node of the given child's name right below the root
+    # the "parent below the root"
+    # put your result variable in the result_str column
+    def ParentBelowRoot(self, name_string_searched_for, result_str, traversal_list_private = [], node_private = None, found = False):
+        if node_private == None:
+            node_private = self.Root()
+        # check nodes
+        for child in node_private:
+            # found root
+            if child.tag == name_string_searched_for:
+                # return highest child
+                if len(traversal_list_private) > 0:
+                    result_str = traversal_list_private[0]
+                    found = True
+                # parent is root
+                else:
+                    result_str = self.Root().tag
+                    found = True
+            # check attributes on the node
+            for attrib in child.attrib:
+                # found root
+                if attrib == name_string_searched_for:
+                    # return highest child
+                    if len(traversal_list_private) > 0:
+                        result_str = traversal_list_private[0]
+                        found = True
+                    # parent is root
+                    else:
+                        result_str = self.Root().tag
+                        found = True
+
+            traversal_list_private.append(child.tag)
+            if (found == False):
+                self.ParentBelowRoot(name_string_searched_for, result_str, traversal_list_private, child)
+                
+
     # generator function to recursive find
     #def find_rec(self, node, element):
     #   for item in node.findall(element):
