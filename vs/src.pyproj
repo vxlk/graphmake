@@ -32,6 +32,9 @@
     <Compile Include="model\__init__.py" />
     <Compile Include="util\logger.py" />
     <Compile Include="util\settings.py" />
+    <Compile Include="util\utilities.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="util\xml.py" />
     <Compile Include="view\connection.py" />
     <Compile Include="view\console.py" />

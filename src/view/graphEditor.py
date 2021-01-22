@@ -55,8 +55,11 @@ class GraphEditor(QAbstractScrollArea):
                         outputPin = pendingPin if not pendingPin.isInput() else beginningPin
                         # going to draw a double line for now
                         # todo: bad bad bad 
-                        pendingPin.addConnection(beginningPin)
-                        pendingPin.node_owner.AddInput(beginningPin)
+                        if pendingPin.TryAddConnection(beginningPin):
+                            pendingPin.node_owner.AddInput(beginningPin)
+                        else:
+                            connection_error_dialog = QDialog()
+                            connection_error_dialog.exec_()
                         #beginningPin.addConnection(pendingPin)
 
         # reset our draw event loop

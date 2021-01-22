@@ -56,7 +56,8 @@ class Node(QObject):
         self.input_pins = []
         self.is_function_node = True
         self.parent_name = database.NodeParent(self.name)
-        print(self.parent_name)
+        self.args = {}
+        self.private_fill_in_arg_list()
 
     def SetNodeName(self, str_name):
         self.name = str_name
@@ -66,5 +67,16 @@ class Node(QObject):
 
     def RemoveInput(self, other_node):
         self.input_pins.append(other_node)
+
+    def ContainsVar(self, parent_name):
+        for key in self.args.keys():
+            if key == parent_name:
+                return True
+        return False
+
+    def private_fill_in_arg_list(self):
+        # fill in the arg list with defaults
+        for arg_key in database.converter.GetVars(self.code):
+            self.args[arg_key] = ""
 
 

@@ -58,11 +58,12 @@ class PinWidget(QWidget):
         return QGraphicsEllipseItem(self.m_x, self.m_y, 
                                     self.m_width, self.m_height)
 
-    def addConnection(self, otherPin):
+    def TryAddConnection(self, otherPin):
         inputPin = self if self.isInput else otherPin
         outputPin = self if self.isInput == False else otherPin
-        self.connections.append(ConnectionWidget(inputPin, outputPin))
-        outputPin.connected_nodes.append(outputPin.node_owner)
+        if inputPin.node_owner.ContainsVar(outputPin.node_owner.parent_name):
+            self.connections.append(ConnectionWidget(inputPin, outputPin))
+            outputPin.connected_nodes.append(outputPin.node_owner)
 
     def text(self):
         text = ""
