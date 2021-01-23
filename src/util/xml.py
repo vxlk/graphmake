@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 from util.settings import *
 from util.logger import *
+from util.utilities import __deprecated__
 
 # handles reading of xml, also handles opening the correct file,
 # the responsibility of setting the correct file is that of the 
@@ -55,37 +56,55 @@ class XMLUtil():
     # the "parent below the root"
     # put your result variable in the result_str column
     def ParentBelowRoot(self, name_string_searched_for, result_str, traversal_list_private = [], node_private = None, found = False):
+        __deprecated__("I am reworking this, i want to come back to it later - when the database beautifying phase goes into effect")
+        
+        #if node_private == None:
+        #    node_private = self.Root()
+        ## check nodes
+        #for child in node_private:
+        #    # found root
+        #    if child.tag == name_string_searched_for:
+        #        # return highest child
+        #        if len(traversal_list_private) > 0:
+        #            result_str = traversal_list_private[0]
+        #            found = True
+        #        # parent is root
+        #        else:
+        #            result_str = self.Root().tag
+        #            found = True
+        #    # check attributes on the node
+        #    for attrib in child.attrib:
+        #        # found root
+        #        if attrib == name_string_searched_for:
+        #            # return highest child
+        #            if len(traversal_list_private) > 0:
+        #                result_str = traversal_list_private[0]
+        #                found = True
+        #            # parent is root
+        #            else:
+        #                result_str = self.Root().tag
+        #                found = True
+
+        #    traversal_list_private.append(child.tag)
+        #    if (found == False):
+        #        self.ParentBelowRoot(name_string_searched_for, result_str, traversal_list_private, child)
+
+    def ParentBelowRootSuckWay(self, name_string_searched_for, result_str, node_private = None, found = False):
+        __deprecated__("this sucks, change it")
         if node_private == None:
             node_private = self.Root()
         # check nodes
         for child in node_private:
-            # found root
-            if child.tag == name_string_searched_for:
-                # return highest child
-                if len(traversal_list_private) > 0:
-                    result_str = traversal_list_private[0]
-                    found = True
-                # parent is root
-                else:
-                    result_str = self.Root().tag
-                    found = True
             # check attributes on the node
             for attrib in child.attrib:
-                # found root
+                # found
                 if attrib == name_string_searched_for:
-                    # return highest child
-                    if len(traversal_list_private) > 0:
-                        result_str = traversal_list_private[0]
-                        found = True
-                    # parent is root
-                    else:
-                        result_str = self.Root().tag
-                        found = True
-
-            traversal_list_private.append(child.tag)
+                    boolFoundLocal = True
+                    result_str = child.attrib[0]
+                    i = 0
+              
             if (found == False):
-                self.ParentBelowRoot(name_string_searched_for, result_str, traversal_list_private, child)
-                
+                self.ParentBelowRoot(name_string_searched_for, result_str, child)
 
     # generator function to recursive find
     #def find_rec(self, node, element):

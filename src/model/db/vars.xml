@@ -9,9 +9,10 @@
    <!-- Applies to the set(x,y) function - this is y -->
    <global_set_var>
       <CXX
+         Parent="global_set_var"
          CMAKE_CXX_STANDARD98="98"
          CMAKE_CXX_STANDARD11="11"
-         CMAKE_CXX_STANDARD17="17"
+         CMAKE_CXX_STANDARD17="17" 
          CMAKE_CXX_STANDARD20="20"
       />
    </global_set_var>
