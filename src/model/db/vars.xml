@@ -3,6 +3,7 @@
 <!-- Applies to the set(x,y) function - this is x -->
    <global_set>
       <CXX
+         Parent="global_set"
          CMAKE_CXX_SET="CMAKE_CXX_STANDARD"
       />
    </global_set>
@@ -18,6 +19,7 @@
    </global_set_var>
    <!-- Cmake versions available (these need to be installed on your pc) -->
    <cmake_version
+      Parent="cmake_version"
       cmake_version="3.15"
    />
 </global_vars>

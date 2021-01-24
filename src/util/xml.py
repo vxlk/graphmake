@@ -14,6 +14,8 @@ class XMLUtil():
         self.varMode = "Var"
         self.modeVar = False
         self.modeFunc = True
+        self.string_result = "" # used by functions that need to store a string result 
+                                # (only promised to be valid after an operation that sets it)
 
     def OpenFile(self):
         if self.modeVar is True:
@@ -89,7 +91,7 @@ class XMLUtil():
         #    if (found == False):
         #        self.ParentBelowRoot(name_string_searched_for, result_str, traversal_list_private, child)
 
-    def ParentBelowRootSuckWay(self, name_string_searched_for, result_str, node_private = None, found = False):
+    def ParentBelowRootSuckWay(self, name_string_searched_for, node_private = None, found = False):
         __deprecated__("this sucks, change it")
         if node_private == None:
             node_private = self.Root()
@@ -99,12 +101,11 @@ class XMLUtil():
             for attrib in child.attrib:
                 # found
                 if attrib == name_string_searched_for:
-                    boolFoundLocal = True
-                    result_str = child.attrib[0]
-                    i = 0
+                    found = True
+                    self.string_result = child.attrib['Parent']
               
             if (found == False):
-                self.ParentBelowRoot(name_string_searched_for, result_str, child)
+                self.ParentBelowRootSuckWay(name_string_searched_for, child, found)
 
     # generator function to recursive find
     #def find_rec(self, node, element):

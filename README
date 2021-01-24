@@ -1,7 +1,6 @@
 TODO:
 db editor widget
-1. var selection (proper var implementation)
-2. implement connections for nodes / vars
+1. FIX THE SELECTOR TREE - MAKE IT GOOD
 3. add stuff to db
 4. make a find all function in the log
 5. Make potential connections only display when it is a proper input/output connection

@@ -36,7 +36,7 @@ class XMLConverter():
                 else:
                     varString += str(char)
                     hasStarted = False
-                    varStrings.append(varString)
+                    varStrings.append(varString.replace('%', ''))
                     varString = ""
             if hasStarted:
                 varString += str(char)

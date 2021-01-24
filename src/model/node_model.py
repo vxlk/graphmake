@@ -74,6 +74,11 @@ class Node(QObject):
                 return True
         return False
 
+    def InsertVariable(self, variable_node):
+        assert variable_node.is_function_node == False
+        #todo: decide positioning if multiple variables of the same name exist in the code block
+        self.code = self.code.replace('%' + variable_node.parent_name + '%', variable_node.code, 1)
+
     def private_fill_in_arg_list(self):
         # fill in the arg list with defaults
         for arg_key in database.converter.GetVars(self.code):

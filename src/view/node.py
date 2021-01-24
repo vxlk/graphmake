@@ -77,11 +77,12 @@ class NodeWidget(QWidget):
     def name(self):
         return self.backendNode.name
 
+    # this function used to be used to connect a node's code with any connected nodes code
+    # this is now handled on connection and the full code with the inputted args is all
+    # returned by the code variable.  Keeping this function as a wrapper around this 
+    # variable in case extra functionality is needed in the future
     def text(self):
         toBeReturned = self.backendNode.code
-        # add pin text
-        for connection in self.backendNode.input_pins:
-            toBeReturned += connection.node_owner.code
         return toBeReturned
 
     def inputPins(self):

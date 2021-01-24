@@ -64,6 +64,12 @@ class PinWidget(QWidget):
         if inputPin.node_owner.ContainsVar(outputPin.node_owner.parent_name):
             self.connections.append(ConnectionWidget(inputPin, outputPin))
             outputPin.connected_nodes.append(outputPin.node_owner)
+            # here we need to handle replacing the var with the actual code of the var
+            # this logic used to be contained within converter, decide if it should be
+            # kept there, moved to node, etc
+            inputPin.node_owner.InsertVariable(outputPin.node_owner)
+            return True
+        return False
 
     def text(self):
         text = ""
