@@ -7,7 +7,7 @@ from util.xml import *
 
 # for now i shall make a list of the names, eventually i want pictures
 # like draw.io has
-
+# This tree works directly with the node manager to figure out which nodes/vars to draw
 class NodeSelectorTree():
     def __init__(self):
         super().__init__()
@@ -77,12 +77,15 @@ class NodeSelectorTree():
         self.tree_impl.itemClicked.connect(self.onNodeItemClick)
         self.tree_impl.topLevelItem(0).setSelected(True)
 
+    # the node we are currently highlighted on in the tree
     def CurrentNodeName(self):
         return nodeManager.current_node_name
 
+    # Return a list of all node names available from the node manager
     def AllNodeNames(self):
         return nodeManager.node_names # might want the dict?
 
+    # Get the underlying widget that this object wraps
     def Widget(self):
         return self.tree_impl
 
@@ -102,6 +105,7 @@ class NodeSelectorTree():
         nodeManager.current_node_type = self.selected_type
         nodeManager.current_node_name = node_name # hardcoded 0 .. enforce 1 name?
 
+    # Search the list of function nodes in the tree for the qtreeitem
     def FindTreeItemFunction(self, str_node_name):
         for item in self.items_func:
             #print(item.text(0) + "," + str_node_name)
@@ -111,6 +115,7 @@ class NodeSelectorTree():
         #print("not found")
         return self.tree_impl
 
+    # Search the list of variable nodes in the tree for the qtreeitem
     def FindTreeItemVariable(self, str_node_name):
         for item in self.items_var:
             #print(item.text(0) + "," + str_node_name)

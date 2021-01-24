@@ -6,7 +6,12 @@ from PyQt5.QtWidgets import *
 #ignores the controller for now ... refactor later
 from model.pin_model import *
 from view.connection import ConnectionWidget
+from util.utilities import __deprecated__
 
+# The gui view of a pin as well as the model of the pin
+# pin's backend data is held within the gui
+# pins are only used to make the gui representation more straight forward
+# and are essentially just mediators between adding variables to node code
 class PinWidget(QWidget):
     def __init__(self, x, y, node_owner, isInput = False, width = 10, height = 10):
         super().__init__()
@@ -58,6 +63,9 @@ class PinWidget(QWidget):
         return QGraphicsEllipseItem(self.m_x, self.m_y, 
                                     self.m_width, self.m_height)
 
+    # add a connection to this pin on this node if the variable classification
+    # fits one of the slots that the node's code has open.  Does not take into
+    # account position right now
     def TryAddConnection(self, otherPin):
         inputPin = self if self.isInput else otherPin
         outputPin = self if self.isInput == False else otherPin
@@ -71,12 +79,15 @@ class PinWidget(QWidget):
             return True
         return False
 
+    # as of 1/24/2021 pins no longer hold their own code -> consider removal
     def text(self):
+        __deprecated__("Pins no longer hold their own code")
         text = ""
         #for output in self.outputConnections:
          #   text += output.backendPin.outputCode
         return text
 
+# Wrappers around creating pins (syntactic sugar around creation)
 def create_input_pin_widget(x, y, node_owner):
     return PinWidget(x, y, node_owner, True)
 def create_output_pin_widget(x, y, node_owner):

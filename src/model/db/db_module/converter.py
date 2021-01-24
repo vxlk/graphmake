@@ -1,26 +1,35 @@
 from util.xml import *
 from util.utilities import __deprecated__
 
-# Does the parsing from xml to node
+# Does the parsing from xml to node as well as all other calculations that have to do with such ...
+# such as extracting and insertion of variables
 class XMLConverter():
     def __init__(self):
         self.dummy = ""
 
-    def ConvertToNode(self, node):
-        logger.Log(node)
-        nodeString = str(node)
+    # Convert from xml node -> graphmake node
+    # Used to do the automatic arg insertion as well
+    # But i have since deprecated that feature
+    def ConvertToNode(self, xml_node):
+        logger.Log(xml_node)
+        nodeString = str(xml_node)
         logger.Log(nodeString + "<- before args")
         toBeReturned = self.FillInArgs(nodeString)
         return toBeReturned
 
+    # Convert from graphmake node to xml node
+    # Will eventually undo inserted args as well
     def ConvertFromNode(self, node):
         print(str(node))
         return str(node)
 
+    # Used to be used to auto-fill variables into appropriate slots
     def FillInArgs(self, codeString):
         __deprecated__("no longer supporting auto-fill args")
         return FillInArgs_impl(codeString)
 
+    # Get the name of variables out of a string of code (that comes from a node)
+    # these will be returned in a list without the '%' delimiters
     def GetVars(self, func_code_str):
         hasStarted = False
         skip = False

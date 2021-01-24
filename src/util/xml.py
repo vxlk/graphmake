@@ -6,7 +6,6 @@ from util.utilities import __deprecated__
 # handles reading of xml, also handles opening the correct file,
 # the responsibility of setting the correct file is that of the 
 # database's
-
 class XMLUtil():
     def __init__(self):
         # this will need revisiting with scale ... fine for now
@@ -17,12 +16,17 @@ class XMLUtil():
         self.string_result = "" # used by functions that need to store a string result 
                                 # (only promised to be valid after an operation that sets it)
 
+    # Use the settings object to open the appropriate db
+    # FOR NOW THESE STAY OPEN FOR THE LIFETIME OF THE PROJECT
+    # TODO: PROPERLY HANDLE YOUR IO AND CLOSE THESE THINGS
     def OpenFile(self):
         if self.modeVar is True:
             return settings.varPath
         else:
             return settings.dbPath
     
+    # Given the name of the new document/db (use the given variables for the names so you don't mess up)
+    # switch our view to the new document/db
     def SetMode(self, modeStr):
         if modeStr == self.funcMode:
             self.modeVar = False
@@ -31,12 +35,15 @@ class XMLUtil():
             self.modeVar = True
             self.modeFunc = False
 
+    # Return the string name of the database we are currently looking at
     def Mode(self):
         if self.modeFunc == True:
             return self.funcMode
         else:
             return self.varMode
 
+    # If in var mode -> func mode
+    # If in func mode -> var mode
     def FlipMode(self):
         if self.modeFunc == True:
             self.modeFunc = False
@@ -45,11 +52,13 @@ class XMLUtil():
             self.modeFunc = True
             self.modeVar = False
 
+    # Root of the current document (node not name/string)
     def Root(self):
         file = self.OpenFile()
         root = ET.parse(file).getroot()       
         return root
 
+    # Name of the root of the current document
     def RootName(self):
         root_node = Root()
         return root_node.tag
@@ -91,6 +100,8 @@ class XMLUtil():
         #    if (found == False):
         #        self.ParentBelowRoot(name_string_searched_for, result_str, traversal_list_private, child)
 
+    # Temporary solution to classification of "types"
+    # Uses the "parent" attribute (temporary) in the database to write parent's names
     def ParentBelowRootSuckWay(self, name_string_searched_for, node_private = None, found = False):
         __deprecated__("this sucks, change it")
         if node_private == None:
@@ -114,18 +125,21 @@ class XMLUtil():
     #    for child in self.find_rec(item, element):
     #        yield child
 
+    # recursive find of a node ... does not include attributes
     def find_rec(self, node, element, result):
         for item in node.findall(element):
             result.append(item)
             self.find_rec(item, element, result)
         return result
 
+    # get all children of a given node
     def find_children_rec(self, node, result):
         for child in node:
             result.append(child)
             self.find_children_rec(child, result)
         return result
 
+    # find nodes that contain a certain attribute
     def find_nodes_with_attrib(self, node_root, attr_name_str, result):
         for child in node_root:
             if child.tag == attr_name_str:
@@ -135,6 +149,7 @@ class XMLUtil():
                     result.append(child)
             self.find_nodes_with_attrib(child, attr_name_str, result)
 
+    # return true if a node has children
     def has_children(self, node):
         # debug code included
         child_list = list(node)
@@ -146,6 +161,7 @@ class XMLUtil():
         attrib_list = list(node.attrib)
         return len(attrib_list) != 0 
 
+    # Gets the value of 
     def Value(self, tag):
         toBeReturned = ""
         toBeReturned = self.FindNode_impl(tag)
@@ -155,6 +171,8 @@ class XMLUtil():
             toBeReturned = self.FindNode_impl(tag)
         return toBeReturned
 
+    # implementation of find node, should not be called directly
+    # but is called by utility functions provided by this class
     def FindNode_impl(self, tag):   
         root = self.Root()
         logger.Log("mode: " + self.Mode())
@@ -192,6 +210,7 @@ class XMLUtil():
         # not found
         return ""
 
+    # Get the "code" associated with a certain node if it exists
     def Values(self, tag):
         root = self.Root()
         
@@ -229,6 +248,8 @@ class XMLUtil():
         return str_names
 
 
+    # Builds a level list (dictionary of ints corresponding to level in tree) with name
+    # of node
     def LevelList(self, level_list_dict, int_level = 0, node = None):
         if (node is None):
             node = self.Root()
@@ -242,6 +263,7 @@ class XMLUtil():
                 for attrib in child.attrib:
                     level_list_dict[attrib] = level
 
+    # all attribs from a node of given name str_node_name
     def AttributesForNodeName(self, str_node_name):
         logger.Log("All Attributes for node " + str(str_node_name), __name__)
         self.SetMode(self.funcMode)
