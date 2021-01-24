@@ -20,8 +20,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
-    <Compile Include="controller\controller.py" />
-    <Compile Include="controller\__init__.py" />
     <Compile Include="model\db\db_module\converter.py" />
     <Compile Include="model\db\db_module\db_model.py" />
     <Compile Include="model\db\db_module\__init__.py" />
@@ -48,7 +46,6 @@
     <Compile Include="view\__init__.py" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="controller" />
     <Folder Include="model" />
     <Folder Include="model\db\" />
     <Folder Include="model\db\db_module" />

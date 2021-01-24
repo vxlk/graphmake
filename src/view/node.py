@@ -1,11 +1,10 @@
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-#ignores the controller for now ... refactor later
 from model.node_model import *
 from view.pin import *
 
-# represents a node in gui view, can communicate with the model through the controller by name (for now name == guid)
+# represents a node in gui view, can communicate with the model by name (for now name == guid)
 # for now make a node hold a QRect, QRectF, and QBrush (for color)
 class NodeWidget(QWidget):
     def __init__(self, x, y, width = 100, height = 100):
@@ -15,7 +14,6 @@ class NodeWidget(QWidget):
         self.m_width = width
         self.m_height = height
         self.isSelected = False
-        #not going thru controller, dunno if big poop or not
         self.backendNode = Node()
 
         self.pins = []
