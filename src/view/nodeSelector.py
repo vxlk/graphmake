@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from model.node_model import *
-
 from util.xml import *
 
 # for now i shall make a list of the names, eventually i want pictures
@@ -67,6 +66,7 @@ class NodeSelectorTree():
             # root
             else:
                 item = QTreeWidgetItem(self.FindTreeItemVariable(""))
+
             item.setText(1, item_name) # hardcoded 0 .. enforce 1 name?
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
 
