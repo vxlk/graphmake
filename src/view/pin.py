@@ -3,7 +3,6 @@
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-#ignores the controller for now ... refactor later
 from model.pin_model import *
 from view.connection import ConnectionWidget
 from util.utilities import __deprecated__
@@ -20,7 +19,6 @@ class PinWidget(QWidget):
         self.m_width = width
         self.m_height = height
         self.isSelected = False
-        #not going thru controller, dunno if big poop or not
         self.backendPin = Pin(isInput)
         self.connections = []
 
