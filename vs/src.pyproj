@@ -30,6 +30,7 @@
     <Compile Include="model\property.py" />
     <Compile Include="model\property_loader.py" />
     <Compile Include="model\__init__.py" />
+    <Compile Include="util\level_list.py" />
     <Compile Include="util\logger.py" />
     <Compile Include="util\settings.py" />
     <Compile Include="util\utilities.py">
