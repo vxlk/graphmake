@@ -19,6 +19,10 @@ class LevelNode():
     def Prev(self):
         return self.neighbor_right
 
+    # retrieve the payload (in this case a string)
+    def Data(self):
+        self.xml_node_name
+
 # A specific level in the @LevelList
 class Level():
     def __init__(self, int_level_num):
@@ -27,25 +31,29 @@ class Level():
         self.iterator = 0
 
     def First(self):
-        self.iterator += 1
         if len(self.nodes) > 0:
             return self.nodes[0]
         return None
 
     def Next(self):
         self.iterator += 1
-        if (Last() < iterator)
-            return self.levels[self.iterator]
+        if self.Last() < iterator:
+            return self.nodes[self.iterator]
+        return None
+
+    def Prev(self):
+        if self.Last() < iterator:
+            return self.nodes[self.iterator].Prev()
         return None
     
     def Last(self):
         index = len(self.nodes)
         if index == 0:
-            None
+            return None
         return self.nodes[index-1]
 
     def LastLevel(self):
-        if (len(self.nodes) > 0)
+        if len(self.nodes) > 0:
             return self.nodes[len(self.nodes)-1]
         return None
 
@@ -55,7 +63,7 @@ class Level():
     # assume parent/child is set before inserting into the level
     def Insert(self, node):
         # assign neighbors
-        last_node = Last()
+        last_node = self.Last()
         last_node.neighbor_right = node
         node.neighbor_left = last_node
         # add to the list now that the neighbors are assigned
@@ -76,31 +84,31 @@ class LevelList():
         self.iterator = 0
 
     # 0 indexing idiot
-    def AddNode(str_name, int_level):
+    def AddNode(self, str_name, int_level):
         if int_level > len(self.levels)-1:
-            AddNewLevel(str_name)
+            self.AddNewLevel(str_name)
         else:
-            AddToCurrentLevel(str_name, int_level)
+            self.AddToCurrentLevel(str_name, int_level)
 
-    def AddNewLevel(str_name):
+    def AddNewLevel(self, str_name):
         self.levels.append(Level(self.LastLevelNum() + 1))
         current_level = self.LastLevel()
         current_level.parent = self.LastLevel()  
         self.LastLevel().child = current_level
         current_level.xml_node_name = str_name
 
-    def AddToCurrentLevel(str_name, int_level):
+    def AddToCurrentLevel(self, str_name, int_level):
         current_level = self.levels[int_level]
         node = LevelNode()
         # figure out parent
-        last_level = LastLevel()
+        last_level = self.LastLevel()
         node.parent = last_level.Last()
         last_level.child = node
         current_level.Insert(node)
         current_level.xml_node_name = str_name
         
     def LastLevel(self):
-        if (len(self.levels) > 0)
+        if len(self.levels) > 0:
             return self.levels[len(self.levels)-1]
         return None
 
@@ -109,17 +117,29 @@ class LevelList():
 
     def Next(self):
         self.iterator += 1
-        if (LastLevelNum() < iterator)
+        if self.LastLevelNum() < iterator:
             return self.levels[self.iterator]
         return None
 
-    def FirstLevel():
+    def Prev(self):
+        prev_iter = self.iterator - 1
+        if prev_iter >= 0:
+            return self.levels[prev_iter]
+        return None
+
+    def FirstLevel(self):
         self.iterator = 0
-        if (LastLevel != None)
+        if self.LastLevel != None:
             return self.levels[0]
         else:
             return None
     
+    def CurrentLevelNum(self):
+        return self.iterator
+    
+    # assumes you checked this
+    def CurrentLevel(self):
+        return self.levels[self.iterator]
 
 # 0 - global_cmake --------------------
 #        |  child()          |            |

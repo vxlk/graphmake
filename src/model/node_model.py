@@ -1,6 +1,7 @@
 from PyQt5.QtCore import *
 import uuid
 from model.db.db_module.db_model import *
+from util.level_list import *
 
 # Manager of nodes:
 # Has knowledge of all nodes that exist
@@ -33,7 +34,7 @@ class NodeManager():
     # 0 - root, 1 - next, 2 - etc each level will have n number of keys associated
     def BuildLevelListFunctions(self):
         database.parser.SetMode(database.parser.funcMode)
-        level_list = {}
+        level_list = LevelList()
         database.parser.LevelList(level_list)
         return level_list
 
@@ -42,7 +43,7 @@ class NodeManager():
     # 0 - root, 1 - next, 2 - etc each level will have n number of keys associated
     def BuildLevelListVariables(self):
         database.parser.SetMode(database.parser.varMode)
-        level_list = {}
+        level_list = LevelList()
         database.parser.LevelList(level_list)
         return level_list
 

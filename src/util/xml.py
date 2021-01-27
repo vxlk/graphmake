@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 from util.settings import *
 from util.logger import *
 from util.utilities import __deprecated__
+from util.level_list import *
 
 # handles reading of xml, also handles opening the correct file,
 # the responsibility of setting the correct file is that of the 
@@ -250,18 +251,20 @@ class XMLUtil():
 
     # Builds a level list (dictionary of ints corresponding to level in tree) with name
     # of node
-    def LevelList(self, level_list_dict, int_level = 0, node = None):
+    def LevelList(self, level_list_structure_out, int_level = 0, node = None):
         if (node is None):
             node = self.Root()
-        for child in node:
+        if self.has_children(node):
             level = int_level + 1
-            level_list_dict[child.tag] = level
-            self.LevelList(level_list_dict, level, child)
-
+        for child in node:
+            level_list_structure_out.AddNode(child.tag, int_level)
+   
             if self.has_attrib(child):
                 level += 1
                 for attrib in child.attrib:
-                    level_list_dict[attrib] = level
+                    level_list_structure_out.AddNode(attrib, int_level)
+
+            self.LevelList(level_list_structure_out, level, child)
 
     # all attribs from a node of given name str_node_name
     def AttributesForNodeName(self, str_node_name):
