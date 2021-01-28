@@ -252,18 +252,21 @@ class XMLUtil():
     # Builds a level list (dictionary of ints corresponding to level in tree) with name
     # of node
     def LevelList(self, level_list_structure_out, int_level = 0, node = None):
+        level = int_level
         if (node is None):
             node = self.Root()
-        if self.has_children(node):
-            level = int_level + 1
+       
         for child in node:
             level_list_structure_out.AddNode(child.tag, int_level)
    
+            attrib_level = level
             if self.has_attrib(child):
-                level += 1
+                attrib_level += 1
                 for attrib in child.attrib:
-                    level_list_structure_out.AddNode(attrib, int_level)
+                    level_list_structure_out.AddNode(attrib, attrib_level)
 
+            if self.has_children(node):
+                level = int_level + 1
             self.LevelList(level_list_structure_out, level, child)
 
     # all attribs from a node of given name str_node_name

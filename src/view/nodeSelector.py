@@ -22,20 +22,24 @@ class NodeSelectorTree():
 
         # --- Functions ----
         level_list = nodeManager.BuildLevelListFunctions()
+        level_list.Print()
         # loop thru level list
         level = level_list.FirstLevel()
         while level != None:
             node = level.First()
             while node != None:
                 # create a tree item with parent from the node parent
-                item = QTreeWidgetItem(self.FindTreeItemFunction(node.Up()))
+                node_parent_name = ""
+                if node.Up() != None:
+                    node_parent_name = node.Up().Data()
+                item = QTreeWidgetItem(self.FindTreeItemFunction(node_parent_name))
                 item.setText(0, node.Data()) # hardcoded 0 .. enforce 1 name?
                 item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
                 self.items_func.append(item)
 
                 node = level.Next()
 
-            level = level.Next()
+            level = level_list.Next()
 
         # --- Variables ----
         level_list = nodeManager.BuildLevelListVariables()        
