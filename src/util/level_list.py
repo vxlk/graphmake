@@ -31,6 +31,7 @@ class Level():
         self.iterator = 0
 
     def First(self):
+        self.iterator = 0
         if len(self.nodes) > 0:
             return self.nodes[0]
         return None
@@ -109,13 +110,14 @@ class LevelList():
         current_level = self.levels[int_level]
         node = LevelNode()
         # figure out parent
-        last_level = self.LastLevel()
-        
-        if last_level.Last() != None:
-            debug_parent_name = last_level.Last().Data()
+       
+        # if we arent at the root level, go up one - else no parent
+        if (int_level-1 >= 0):
+            node.parent = self.levels[int_level-1].Last()
+        else:
+            node.parent = None
 
-        node.parent = last_level.Last()
-        last_level.child = node
+        #last_level.child = node
         node.xml_node_name = str_name
         current_level.Insert(node)
         
@@ -160,7 +162,10 @@ class LevelList():
             print("Level: ")
             print(level.level_num)
             while node != None:
-                print(node.Data())
+                parent = ""
+                if node.Up() != None:
+                    parent = node.Up().Data()
+                print(node.Data() + " Parent: " + parent)
                 node = level.Next()
 
             level = self.Next()

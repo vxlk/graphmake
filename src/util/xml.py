@@ -259,7 +259,7 @@ class XMLUtil():
         for child in node:
             level_list_structure_out.AddNode(child.tag, int_level)
    
-            attrib_level = level
+            attrib_level = int_level
             if self.has_attrib(child):
                 attrib_level += 1
                 for attrib in child.attrib:

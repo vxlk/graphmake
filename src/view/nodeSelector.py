@@ -17,7 +17,6 @@ class NodeSelectorTree():
         self.items_func = []
         self.items_var = []
         self.tree_impl.setColumnCount(2)
-        
         self.selected_type = nodeManager.selected_type_function
 
         # --- Functions ----
@@ -34,7 +33,8 @@ class NodeSelectorTree():
                     node_parent_name = node.Up().Data()
                 item = QTreeWidgetItem(self.FindTreeItemFunction(node_parent_name))
                 item.setText(0, node.Data()) # hardcoded 0 .. enforce 1 name?
-                item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+                if item.text(0) != "Parent": # fucking hate this
+                    item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
                 self.items_func.append(item)
 
                 node = level.Next()
@@ -42,21 +42,26 @@ class NodeSelectorTree():
             level = level_list.Next()
 
         # --- Variables ----
-        level_list = nodeManager.BuildLevelListVariables()        
+        level_list = nodeManager.BuildLevelListVariables()
+        level_list.Print()
         # loop thru level list
         level = level_list.FirstLevel()
         while level != None:
             node = level.First()
             while node != None:
                 # create a tree item with parent from the node parent
-                item = QTreeWidgetItem(self.FindTreeItemVariable(node.Up()))
+                node_parent_name = ""
+                if node.Up() != None:
+                    node_parent_name = node.Up().Data()
+                item = QTreeWidgetItem(self.FindTreeItemVariable(node_parent_name))
                 item.setText(1, node.Data()) # hardcoded 0 .. enforce 1 name?
-                item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+                if item.text(1) != "Parent": # fucking hate this
+                    item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
                 self.items_var.append(item)
 
                 node = level.Next()
 
-            level = level.Next()
+            level = level_list.Next()
                     
 
 
@@ -147,25 +152,35 @@ class NodeSelectorTree():
         nodeManager.current_node_name = node_name # hardcoded 0 .. enforce 1 name?
 
     # Search the list of function nodes in the tree for the qtreeitem
+    # wanna get the last item with this name so this is a little funky
     def FindTreeItemFunction(self, str_node_name):
+        found_node = None
         if str_node_name == None:
             return self.tree_impl
         for item in self.items_func:
             #print(item.text(0) + "," + str_node_name)
             if item.text(0) == str_node_name:
                 #print("found")
-                return item
+                found_node = item
         #print("not found")
-        return self.tree_impl
+        if found_node == None:
+            return self.tree_impl
+        else:
+            return found_node
 
     # Search the list of variable nodes in the tree for the qtreeitem
+    # wanna get the last item with this name so this is a little funky
     def FindTreeItemVariable(self, str_node_name):
+        found_node = None
         if str_node_name == None:
             return self.tree_impl
         for item in self.items_var:
             #print(item.text(0) + "," + str_node_name)
             if item.text(1) == str_node_name:
                 #print("found")
-                return item
+                found_node = item
         #print("not found")
-        return self.tree_impl
+        if found_node == None:
+            return self.tree_impl
+        else:
+            return found_node
