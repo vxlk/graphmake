@@ -14,9 +14,9 @@ class LevelNode():
         return self.child
     def Up(self):
         return self.parent
-    def Next(self):
+    def Left(self):
         return self.neighbor_left
-    def Prev(self):
+    def Right(self):
         return self.neighbor_right
 
     # retrieve the payload (in this case a string)
@@ -103,6 +103,7 @@ class LevelList():
 
         if prev_level != None:
            current_level.Last().parent = prev_level.Last()
+           prev_level.Last().child = current_level.Last()
            debug_parent_name = prev_level.Last().Data()
            prev_level.Last().child = current_level.Last()
 
@@ -114,6 +115,7 @@ class LevelList():
         # if we arent at the root level, go up one - else no parent
         if (int_level-1 >= 0):
             node.parent = self.levels[int_level-1].Last()
+            self.levels[int_level-1].Last().child = node
         else:
             node.parent = None
 
@@ -163,9 +165,12 @@ class LevelList():
             print(level.level_num)
             while node != None:
                 parent = ""
+                child = ""
                 if node.Up() != None:
                     parent = node.Up().Data()
-                print(node.Data() + " Parent: " + parent)
+                if node.Down() != None:
+                    child = node.Down().Data()
+                print(node.Data() + " Parent: " + parent + " Child: " + child)
                 node = level.Next()
 
             level = self.Next()

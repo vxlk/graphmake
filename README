@@ -1,9 +1,19 @@
-TODO:
+BACKLOG:
+tree needs fixed (QT sucks) - in progress 2
+
+unit test framework needs written - in progress 1
+
+scripting language input for unit tests need written
+
+unit tests need written
+
 db editor widget
-1. FIX THE SELECTOR TREE - MAKE IT GOOD
-3. add stuff to db
-4. make a find all function in the log
-5. Make potential connections only display when it is a proper input/output connection
+
+add stuff to db
+
+make a find all function in the log
+
+Make potential connections only display when it is a proper input/output connection
 
 BUGS:
 1. pin highlighting is not checked (input can go input etc)

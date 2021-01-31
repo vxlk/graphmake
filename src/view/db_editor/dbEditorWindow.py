@@ -112,9 +112,22 @@ class DBEditorWindow(QMainWindow):
         self.setWindowTitle("Database Editor")
         
         self.selectorContainer = QDockWidget()
-        self.nodeSelector = NodeSelectorTree()
+        self.nodeSelector = NodeSelectorTree("Function")
         self.selectorContainer.setWidget(self.nodeSelector.Widget())
         self.addDockWidget(Qt.LeftDockWidgetArea, self.selectorContainer)
+
+        # add selector container
+        self.selectorContainer = QDockWidget()
+        self.nodeSelector = NodeSelectorTree("Function")
+        self.selectorContainer.setWidget(self.nodeSelector.Widget())
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.selectorContainer)
+
+        self.selectorContainerVar = QDockWidget()
+        self.nodeSelectorVar = NodeSelectorTree("Variable")
+        self.selectorContainerVar.setWidget(self.nodeSelector.Widget())
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.selectorContainerVar)
+
+        self.splitDockWidget(self.selectorContainer, self.selectorContainerVar, Qt.Horizontal)
 
         self.db_editorContainer = QDockWidget()
         self.db_editor = DBEditorWidget()

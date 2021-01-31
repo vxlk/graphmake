@@ -9,117 +9,80 @@ from util.level_list import *
 # like draw.io has
 # This tree works directly with the node manager to figure out which nodes/vars to draw
 class NodeSelectorTree():
-    def __init__(self):
+    def __init__(self, type_of_tree):
         super().__init__()
         self.tree_impl = QTreeWidget()
         self.tree_impl.resize(250, self.tree_impl.height()) #todo: figure out size
         # might need to reorganize this later... for now just do an array
         self.items_func = []
         self.items_var = []
-        self.tree_impl.setColumnCount(2)
+        self.tree_impl.setColumnCount(1)
         self.selected_type = nodeManager.selected_type_function
 
-        # --- Functions ----
-        level_list = nodeManager.BuildLevelListFunctions()
-        level_list.Print()
-        # loop thru level list
-        level = level_list.FirstLevel()
-        while level != None:
+        if (type_of_tree == "Function"):
+            # --- Functions ----
+            level_list = nodeManager.BuildLevelListFunctions()
+            #level_list.Print()
+            # loop thru level list
+            level = level_list.FirstLevel()
             node = level.First()
             while node != None:
                 # create a tree item with parent from the node parent
-                node_parent_name = ""
-                if node.Up() != None:
-                    node_parent_name = node.Up().Data()
-                item = QTreeWidgetItem(self.FindTreeItemFunction(node_parent_name))
-                item.setText(0, node.Data()) # hardcoded 0 .. enforce 1 name?
-                if item.text(0) != "Parent": # fucking hate this
-                    item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-                self.items_func.append(item)
+                self.AddToTree(node, True)
 
-                node = level.Next()
+                # recurse through children until there are no more children
+                child = node.Down()
+                while child != None:
+                    # create a tree item with parent from the node parent
+                    self.AddToTree(child, True)
+                    childs_parent = child.Up()
 
-            level = level_list.Next()
+                    ## look left for a neighbor on the row that we are looking @, until we can't anymore
+                    neighbor = child.Left()
+                    while neighbor != None and neighbor.Up() == childs_parent:
+                        # create a tree item with parent from the node parent
+                        self.AddToTree(neighbor, True)
+                        # get the next node in this row
+                        neighbor = neighbor.Left()
 
-        # --- Variables ----
-        level_list = nodeManager.BuildLevelListVariables()
-        level_list.Print()
-        # loop thru level list
-        level = level_list.FirstLevel()
-        while level != None:
-            node = level.First()
-            while node != None:
-                # create a tree item with parent from the node parent
-                node_parent_name = ""
-                if node.Up() != None:
-                    node_parent_name = node.Up().Data()
-                item = QTreeWidgetItem(self.FindTreeItemVariable(node_parent_name))
-                item.setText(1, node.Data()) # hardcoded 0 .. enforce 1 name?
-                if item.text(1) != "Parent": # fucking hate this
-                    item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-                self.items_var.append(item)
-
-                node = level.Next()
-
-            level = level_list.Next()
+                    # get the next child down
+                    child = child.Down()
                     
+                # go through nodes on a level
+                node = level.Next()
 
+        if (type_of_tree == "Variable"):
+            ## --- Variables ----
+            level_list = nodeManager.BuildLevelListVariables()
+            #level_list.Print()
+            # loop thru level list
+            level = level_list.FirstLevel()
+            node = level.First()
+            while node != None:
+                # create a tree item with parent from the node parent
+                self.AddToTree(node, False)
+                # recurse through children until there are no more children
+                child = node.Down()
+            
+                while child != None:
+                    # create a tree item with parent from the node parent
+                    self.AddToTree(child, False)
+                    childs_parent = child.Up()
 
-        #prev_node_level = 0
-        #prev_dict = {}
-        #prev_node_name = ""
-        #level_list = nodeManager.BuildLevelListFunctions()
-        #for item_name in level_list.keys():
-        #    current_level = level_list[item_name]
-        #    # ------- functions --------
-        #     # create new parent
-        #    if current_level > prev_node_level:
-        #        prev_node_level = current_level
-        #        prev_dict[current_level] = prev_node_name
-        #    elif current_level < prev_node_level:
-        #        prev_node_level = current_level
-        #        prev_dict[current_level] = item_name
+                    ## look left for a neighbor on the row that we are looking @, until we can't anymore
+                    neighbor = child.Left()
+                    while neighbor != None and neighbor.Up() == childs_parent:
+                        # create a tree item with parent from the node parent
+                        self.AddToTree(neighbor, False)
+                        # get the next node in this row
+                        neighbor = neighbor.Left()
 
-        #    if current_level in prev_dict:
-        #        item = QTreeWidgetItem(self.FindTreeItemFunction(prev_dict[current_level]))
-        #    # root
-        #    else:
-        #        item = QTreeWidgetItem(self.FindTreeItemFunction(""))
-        #    item.setText(0, item_name) # hardcoded 0 .. enforce 1 name?
-        #    item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-
-        #    prev_node_name = item_name
-        #    self.items_func.append(item)
-
-        #    # -------- variables ---------
-        #prev_node_level = 0
-        #prev_dict = {}
-        #prev_node_name = ""
-        #level_list = nodeManager.BuildLevelListVariables()
-        #for item_name in level_list.keys():
-        #    current_level = level_list[item_name]
-
-        #     # create new parent
-        #    if current_level > prev_node_level:
-        #        prev_node_level = current_level
-        #        prev_dict[current_level] = prev_node_name
-        #    elif current_level < prev_node_level:
-        #        prev_node_level = current_level
-        #        prev_dict[current_level] = item_name
-
-        #    if current_level in prev_dict:
-        #        item = QTreeWidgetItem(self.FindTreeItemVariable(prev_dict[current_level]))
-        #    # root
-        #    else:
-        #        item = QTreeWidgetItem(self.FindTreeItemVariable(""))
-
-        #    item.setText(1, item_name) # hardcoded 0 .. enforce 1 name?
-        #    item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-
-        #    prev_node_name = item_name
-        #    self.items_var.append(item)
-
-
+                    # get the next child down
+                    child = child.Down()
+                    
+                # go through nodes on a level
+                node = level.Next()
+                    
         self.tree_impl.itemClicked.connect(self.onNodeItemClick)
         self.tree_impl.topLevelItem(0).setSelected(True)
 
@@ -184,3 +147,27 @@ class NodeSelectorTree():
             return self.tree_impl
         else:
             return found_node
+
+    # add an item to the tree
+    # pick a section that it will belong to (the function section (left), or the variable section (right))
+    def AddToTree(self, node, bool_is_func_node):
+        # create a tree item with parent from the node parent
+        node_parent_name = ""
+        if node.Up() != None:
+            node_parent_name = node.Up().Data()
+
+        # add to tree with correct parent based on what type it is
+        if bool_is_func_node == True:
+            item = QTreeWidgetItem(self.FindTreeItemFunction(node_parent_name))
+        else:
+            item = QTreeWidgetItem(self.FindTreeItemVariable(node_parent_name))
+  
+        item.setText(0, node.Data())
+        if item.text(0) != "Parent": # fucking hate this
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+    
+        # add to internal list for easier searching based on what type it is
+        if bool_is_func_node == True:
+            self.items_func.append(item)
+        else:
+            self.items_var.append(item)
