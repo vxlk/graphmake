@@ -1,0 +1,10 @@
+Version: Alpha.0.0.1
+
+Features Added:
+- Initial bare bones features of the app
+
+Features Fixed:
+- N/A
+
+Functionality Change:
+- The app runs
