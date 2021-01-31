@@ -14,9 +14,7 @@ class XMLUtil():
         self.varMode = "Var"
         self.modeVar = False
         self.modeFunc = True
-        self.string_result = "" # used by functions that need to store a string result 
-                                # (only promised to be valid after an operation that sets it)
-
+        
     # Use the settings object to open the appropriate db
     # FOR NOW THESE STAY OPEN FOR THE LIFETIME OF THE PROJECT
     # TODO: PROPERLY HANDLE YOUR IO AND CLOSE THESE THINGS
@@ -67,58 +65,22 @@ class XMLUtil():
     # returns the name of the parent node of the given child's name right below the root
     # the "parent below the root"
     # put your result variable in the result_str column
-    def ParentBelowRoot(self, name_string_searched_for, result_str, traversal_list_private = [], node_private = None, found = False):
-        __deprecated__("I am reworking this, i want to come back to it later - when the database beautifying phase goes into effect")
-        
-        #if node_private == None:
-        #    node_private = self.Root()
-        ## check nodes
-        #for child in node_private:
-        #    # found root
-        #    if child.tag == name_string_searched_for:
-        #        # return highest child
-        #        if len(traversal_list_private) > 0:
-        #            result_str = traversal_list_private[0]
-        #            found = True
-        #        # parent is root
-        #        else:
-        #            result_str = self.Root().tag
-        #            found = True
-        #    # check attributes on the node
-        #    for attrib in child.attrib:
-        #        # found root
-        #        if attrib == name_string_searched_for:
-        #            # return highest child
-        #            if len(traversal_list_private) > 0:
-        #                result_str = traversal_list_private[0]
-        #                found = True
-        #            # parent is root
-        #            else:
-        #                result_str = self.Root().tag
-        #                found = True
-
-        #    traversal_list_private.append(child.tag)
-        #    if (found == False):
-        #        self.ParentBelowRoot(name_string_searched_for, result_str, traversal_list_private, child)
-
-    # Temporary solution to classification of "types"
-    # Uses the "parent" attribute (temporary) in the database to write parent's names
-    def ParentBelowRootSuckWay(self, name_string_searched_for, node_private = None, found = False):
-        __deprecated__("this sucks, change it")
-        if node_private == None:
-            node_private = self.Root()
-        # check nodes
-        for child in node_private:
-            # check attributes on the node
-            for attrib in child.attrib:
-                # found
-                if attrib == name_string_searched_for:
-                    found = True
-                    self.string_result = child.attrib['Parent']
-              
-            if (found == False):
-                self.ParentBelowRootSuckWay(name_string_searched_for, child, found)
-
+    def ParentBelowRoot(self, name_string_searched_for):
+        # __deprecated__("I am reworking this, i want to come back to it later - when the database beautifying phase goes into effect")
+        level_list = LevelList()
+        self.LevelList(level_list)
+        found_node = level_list.FindNode(name_string_searched_for)
+        if found_node == None:
+            return ""
+        else:
+            # get the highest level parent'
+            parent_name = ""
+            node_parent = found_node.Up()
+            while node_parent != None:
+                parent_name = node_parent.Data()
+                node_parent = node_parent.Up()
+            return parent_name
+       
     # generator function to recursive find
     #def find_rec(self, node, element):
     #   for item in node.findall(element):

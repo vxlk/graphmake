@@ -20,8 +20,8 @@ class Database():
     # Get the highest root parent of this node to classify it as a type
     def NodeParent(self, name_string):
         # we will be using "parent below root" nodes to classify variables by type
-        self.parser.ParentBelowRootSuckWay(name_string)
-        return self.parser.string_result
+        highest_level_parent = self.parser.ParentBelowRoot(name_string)
+        return highest_level_parent
 
     # Get all node names in the current document
     def AllNodeNames(self):

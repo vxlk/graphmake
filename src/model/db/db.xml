@@ -2,19 +2,16 @@
 <global_cmake>
     <!-- Supplies the function for the version of cmake used -->
    <cmake_version
-      Parent="cmake_version"
       cmake_minimum_required="cmake_minimum_required(VERSION %cmake_version%)"
     />
    
    <!-- Supplies the function for the global set function-->
    <global_set
-        Parent="global_set"
         set="set(%global_set%  %global_set_var%)"
    />
 
    <scripting>
       <language
-         Parent="scripting"
          break="break()"
          continue="continue()"
       />

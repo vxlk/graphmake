@@ -30,38 +30,39 @@ class Level():
         self.level_num = int_level_num
         self.iterator = 0
 
+    # First node in the level -> resets the iterator
     def First(self):
         self.iterator = 0
         if len(self.nodes) > 0:
             return self.nodes[0]
         return None
 
+    # Next node in the level
     def Next(self):
         self.iterator += 1
         if self.LastNodeNum() > self.iterator:
             return self.nodes[self.iterator]
         return None
 
+    # The previous node in the level
     def Prev(self):
         if self.LastNodeNum() > self.iterator:
             return self.nodes[self.iterator].Prev()
         return None
     
+    # The last node in the level
     def Last(self):
         index = len(self.nodes)
         if index == 0:
             return None
         return self.nodes[index-1]
 
-    def LastLevel(self):
-        if len(self.nodes) > 0:
-            return self.nodes[len(self.nodes)-1]
-        return None
-
+    # Number of the last node in the level
     def LastNodeNum(self):
         return len(self.nodes)
 
     # assume parent/child is set before inserting into the level
+    # Insert a node into this level -> done internally through levelList -> not designed to be called directly
     def Insert(self, node):
         # assign neighbors
         last_node = self.Last()
@@ -78,20 +79,24 @@ class Level():
 # a list of children under that node with their appropriate levels
 #
 # During construction: assumes all nodes added are in order that they should be in the tree
-# Supports:
-# A
+# todo: ascii art drawing so this makes sense
 class LevelList():
     def __init__(self):
         self.levels = []
         self.iterator = 0
 
-    # 0 indexing idiot
+    # 0 indexing
+    # add a node to a certain level
+    # if that level does not exist it will be made
+    # assumes everything that comes in will be in the order that you want
+    # the nodes to be in
     def AddNode(self, str_name, int_level):
         if int_level > len(self.levels)-1:
             self.AddNewLevel(str_name)
         else:
             self.AddToCurrentLevel(str_name, int_level)
-
+    
+    # internal function from add node
     def AddNewLevel(self, str_name):
         prev_level = self.LastLevel()
         self.levels.append(Level(self.LastLevelNum() + 1))
@@ -107,6 +112,7 @@ class LevelList():
            debug_parent_name = prev_level.Last().Data()
            prev_level.Last().child = current_level.Last()
 
+    # internal function from add node
     def AddToCurrentLevel(self, str_name, int_level):
         current_level = self.levels[int_level]
         node = LevelNode()
@@ -122,27 +128,32 @@ class LevelList():
         #last_level.child = node
         node.xml_node_name = str_name
         current_level.Insert(node)
-        
+    
+    # Return the last level in the list -> all iteration goes backwards
     def LastLevel(self):
         if len(self.levels) > 0:
             return self.levels[len(self.levels)-1]
         return None
 
+    # number of the last level
     def LastLevelNum(self):
         return len(self.levels)
 
+    # Get the next level in the list
     def Next(self):
         self.iterator += 1
         if self.LastLevelNum() > self.iterator:
             return self.levels[self.iterator]
         return None
 
+    # Get the previous level in the list
     def Prev(self):
         prev_iter = self.iterator - 1
         if prev_iter >= 0:
             return self.levels[prev_iter]
         return None
 
+    # Get the first level in the list and reset the iterator
     def FirstLevel(self):
         self.iterator = 0
         if self.LastLevel != None:
@@ -150,13 +161,27 @@ class LevelList():
         else:
             return None
     
+    # return the number held by the internal iterator
     def CurrentLevelNum(self):
         return self.iterator
     
-    # assumes you checked this
+    # assumes you checked this, return the level @ number -> DOES NOT BOUNDS CHECK
     def CurrentLevel(self):
         return self.levels[self.iterator]
 
+    # Find a node anywhere in the list -> empty node returned if not found
+    def FindNode(self, str_node_name):
+        level = self.FirstLevel()
+        while level != None:
+            node = level.First()
+            while node != None:
+                if str_node_name == node.Data():
+                    return node
+                node = level.Next()
+            level = self.Next()
+        return None
+
+    # Print the list for debugging -> also a good example of how the scuffed iterators work
     def Print(self):
         level = self.FirstLevel()
         while level != None:
