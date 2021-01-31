@@ -138,9 +138,11 @@ editor_widget = DBEditorWindow() # no parent is questionable
 editor_widget.connectConsole(console, logger)
 editor_widget.hide()
 
-def show_about_dialog():
+def show_editor_widget():
+    # writing it in this way to leave room for expansion in the case that this requires more set
+    # up in the future
     editor_widget.show()
-db_editor_action.triggered.connect(show_about_dialog)
+db_editor_action.triggered.connect(show_editor_widget)
 
 # --- Database Editor Window --- #
 
