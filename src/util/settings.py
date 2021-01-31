@@ -51,8 +51,9 @@ class Settings():
         self.data['settings'][key] = value
         self.Dump()
 
+    # TODO: THIS DOESNT WORK FIX
     def Update(self, key, value):
-        jsonObj = json.load(data)
+        jsonObj = json.load(self.data)
         jsonObj[key] = value
         self.data = json.load(jsonObj)
         self.Dump()

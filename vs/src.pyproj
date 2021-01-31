@@ -20,6 +20,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
+    <Compile Include="model\cmake_interface.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="model\cmake_parser.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="model\db\db_module\converter.py" />
     <Compile Include="model\db\db_module\db_model.py" />
     <Compile Include="model\db\db_module\__init__.py" />

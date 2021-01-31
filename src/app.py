@@ -8,6 +8,8 @@ from view.console import Console
 from view.db_editor.dbEditorWindow import *
 from util.settings import *
 from util.logger import *
+from model.cmake_parser import *
+from model.cmake_interface import *
 
 # graphmake version number
 # -------------------------------
@@ -159,6 +161,34 @@ def show_editor_widget():
 db_editor_action.triggered.connect(show_editor_widget)
 
 # --- Database Editor Window --- #
+
+# --- CMake Parser --- #
+
+cmake_parser_button = window.menuBar().addMenu("&Open CMake File")
+cmake_parser_action = QAction("&Open CMake File")
+cmake_parser_button.addAction(cmake_parser_action)
+cmake_parser = CMakeParser()
+cmake_interface = CMakeInterface()
+cmake_interface.ConnectConsole(console)
+def open_cmake_file():
+    cmake_file_path = ""
+    cmake_file_path = QFileDialog.getOpenFileName(window, "Open")[0]
+    if cmake_file_path:
+        cmake_parser.OpenFile(cmake_file_path)
+        # switch the cmake file to the new file in our settings when one is opened
+        # Also update the settings file which i hate for now
+        settings.cmakeFilePath = cmake_file_path
+        settings.Add(settings.kCmakeFileLoc, cmake_file_path)
+        # update our text view with the contents of the new cmake file
+        with open (cmake_file_path, "r") as cmake_file:
+            data_list = cmake_file.readlines()
+            cmake_parser.GenerateGraph(data_list, graph)
+            data_raw=cmake_file.read()
+            # graph.updateSignal.emit(data_raw) 
+        
+cmake_parser_action.triggered.connect(open_cmake_file)
+
+# --- CMake Parser --- #
 
 # Force the style to be the same on all OSs:
 app.setStyle("Fusion")
