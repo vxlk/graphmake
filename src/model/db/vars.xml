@@ -20,6 +20,6 @@
    <!-- Cmake versions available (these need to be installed on your pc) -->
    <cmake_version
       Parent="cmake_version"
-      cmake_version="3.15"
+      cmake_version_number="3.15"
    />
 </global_vars>

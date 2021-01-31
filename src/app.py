@@ -37,11 +37,11 @@ textContainer = QDockWidget("Text Container")
 textContainer.setAllowedAreas(Qt.RightDockWidgetArea)
 textContainer.setWidget(text)
 
-nodeSelectorContainer = QDockWidget("Node Selector")
+nodeSelectorContainer = QDockWidget("Functions")
 nodeSelectorContainer.setAllowedAreas(Qt.LeftDockWidgetArea) 
 nodeSelectorContainer.setWidget(nodeTree.Widget())
 
-nodeSelectorContainerVar = QDockWidget("Node Selector Var")
+nodeSelectorContainerVar = QDockWidget("Variables")
 nodeSelectorContainerVar.setAllowedAreas(Qt.LeftDockWidgetArea) 
 nodeSelectorContainerVar.setWidget(nodeTreeVar.Widget())
 

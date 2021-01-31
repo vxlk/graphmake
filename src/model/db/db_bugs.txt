@@ -1,0 +1,2 @@
+parent was extremely hard to find: workaround = add a parent field temporarily
+if a child has the same name as the parent it breaks the tree - no workaround currently

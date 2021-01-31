@@ -17,7 +17,12 @@ class NodeSelectorTree():
         self.items_func = []
         self.items_var = []
         self.tree_impl.setColumnCount(1)
-        self.selected_type = nodeManager.selected_type_function
+
+        self.selected_type = ""
+        if type_of_tree == "Function":
+            self.selected_type = nodeManager.selected_type_function
+        if type_of_tree == "Variable":
+            self.selected_type = nodeManager.selected_type_variable
 
         if (type_of_tree == "Function"):
             # --- Functions ----
@@ -102,15 +107,7 @@ class NodeSelectorTree():
     # until the tree is redesigned, it will do some arbitrary dumb checks
     # to decide whether it is a var or a function
     def onNodeItemClick(self, item, index):
-        node_name = ""
-        # is a var
-        if (item.text(0) == ""):
-            node_name = item.text(1)
-            self.selected_type = nodeManager.selected_type_variable
-        else:
-            node_name = item.text(0)
-            self.selected_type = nodeManager.selected_type_function
-
+        node_name = item.text(0)
         nodeManager.current_node_type = self.selected_type
         nodeManager.current_node_name = node_name # hardcoded 0 .. enforce 1 name?
 
@@ -139,7 +136,7 @@ class NodeSelectorTree():
             return self.tree_impl
         for item in self.items_var:
             #print(item.text(0) + "," + str_node_name)
-            if item.text(1) == str_node_name:
+            if item.text(0) == str_node_name:
                 #print("found")
                 found_node = item
         #print("not found")
