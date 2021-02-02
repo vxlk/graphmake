@@ -3,6 +3,17 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from view.node import NodeWidget
 from model.node_model import * # access the node manager
+from model.graph import *
+
+# HOOK UP TO BACKEND GRAPH!!!!!!!!!!!!!!!!!! ------------------------------------------------------------------
+
+# Used when auto generating graphs
+# Think of this as a matrix | node |      |
+#                           |      | node |
+# that provides a layout for incoming auto-generated graphs of nodes and variables
+class GraphView():
+    def __init__(self):
+        none = None # todo: implement later im stressing out rn
 
 class GraphEditor(QAbstractScrollArea):
     
@@ -15,7 +26,9 @@ class GraphEditor(QAbstractScrollArea):
         self.connectionStartPoint = QPoint(0,0)
         self.connectionEndPoint = QPoint(0,0)
         self.setMouseTracking(True)
-        
+        self.current_graph = graphManager.TopLevelGraph()
+        self.SetGraph(self.current_graph)
+
         # enable this later if needed if we need a
         # custom event loop
         #self.installEventFilter(self)
@@ -27,6 +40,12 @@ class GraphEditor(QAbstractScrollArea):
                 text += node.text()
                 text += '\n'
         return text
+
+    # set the current gui to mirror a new graph
+    def SetGraph(self, incoming_graph):
+        self.setObjectName(incoming_graph.name)
+        self._nodes.clear()
+        # todo: fill in this graph based on that graph
 
     def checkIfPinIsHit(self, pos):
         for node in self._nodes:

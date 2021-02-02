@@ -182,10 +182,8 @@ def open_cmake_file():
         # update our text view with the contents of the new cmake file
         with open (cmake_file_path, "r") as cmake_file:
             data_list = cmake_file.readlines()
-            cmake_parser.GenerateGraph(data_list, graph)
-            data_raw=cmake_file.read()
-            # graph.updateSignal.emit(data_raw) 
-        
+            graph.SetGraph(cmake_parser.GenerateGraph(data_list))
+                    
 cmake_parser_action.triggered.connect(open_cmake_file)
 
 # --- CMake Parser --- #

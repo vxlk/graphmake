@@ -14,6 +14,7 @@ class XMLUtil():
         self.varMode = "Var"
         self.modeVar = False
         self.modeFunc = True
+        self.invalid_node = ""
         
     # Use the settings object to open the appropriate db
     # FOR NOW THESE STAY OPEN FOR THE LIFETIME OF THE PROJECT
