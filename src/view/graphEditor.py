@@ -11,9 +11,45 @@ from model.graph import *
 # Think of this as a matrix | node |      |
 #                           |      | node |
 # that provides a layout for incoming auto-generated graphs of nodes and variables
+# also holds the position of existing nodes in existing graphs
 class GraphView():
-    def __init__(self):
-        none = None # todo: implement later im stressing out rn
+    def __init__(self, str_name):
+        self.node_widgets = []
+        self.graph_name = str_name
+
+        self.curr_pos_func = QPoint(25,25) # temp
+        self.curr_pos_var = QPoint(200, 25)
+
+    def CreateView(self, graph: Graph):
+        # create func nodes
+        for func_node in graph.nodes:
+            newNodeWidget = NodeWidget(curr_pos_func.x(), curr_pos_func.y())
+            newNodeWidget.backendNode.is_function_node = True       
+            self.node_widgets.append(newNodeWidget)
+            self.TempIncreasePosFunc() # ++
+        # create var nodes
+        for var_node in graph.vars:
+            newNodeWidget = NodeWidget(curr_pos_func.x(), curr_pos_func.y())
+            newNodeWidget.backendNode.is_function_node = False       
+            self.node_widgets.append(newNodeWidget)
+            self.TempIncreasePosVar() # ++
+        # render connections
+        for node_index in graph.connections.keys():
+            list_connected_vars = graph.connections[node_index]
+            for var in list_connected_vars:
+                i = 0 # todo!
+
+    def NodeWidgets(self):
+        return self.node_widgets
+
+    def TempIncreasePosFunc(self):
+        curr_y = self.curr_pos_func.y()
+        self.curr_pos.setY(curr_y + 100)
+
+    def TempIncreasePosVar(self):
+        curr_y = self.curr_pos_var.y()
+        self.curr_pos_var.setY(curr_y + 100)
+        
 
 class GraphEditor(QAbstractScrollArea):
     
@@ -27,6 +63,9 @@ class GraphEditor(QAbstractScrollArea):
         self.connectionEndPoint = QPoint(0,0)
         self.setMouseTracking(True)
         self.current_graph = graphManager.TopLevelGraph()
+        self.graphViews = []
+        self.graphViews.append(GraphView(self.current_graph.name))
+
         self.SetGraph(self.current_graph)
 
         # enable this later if needed if we need a
@@ -43,9 +82,28 @@ class GraphEditor(QAbstractScrollArea):
 
     # set the current gui to mirror a new graph
     def SetGraph(self, incoming_graph):
+        # todo: check if graph view needs added
         self.setObjectName(incoming_graph.name)
         self._nodes.clear()
+        curr_view = self.AddView(incoming_graph)
+        self.current_view = curr_view
+        self._nodes = curr_view.node_widgets
         # todo: fill in this graph based on that graph
+
+    # add a view to the list if it is unique
+    def AddView(self, graph: Graph):
+        result = self.FindView(graph.name)
+        if result == None:
+            self.graphViews.append(GraphView(graph))
+            return self.graphViews[len(self.graphViews)-1]
+        return result
+        
+    # Find the view associated with this graph in order to render it
+    def FindView(self, str_graph_name):
+        for view in self.graphViews:
+            if view.graph_name == str_graph_name:
+                return view
+        return None
 
     def checkIfPinIsHit(self, pos):
         for node in self._nodes:
@@ -76,6 +134,7 @@ class GraphEditor(QAbstractScrollArea):
                         # todo: bad bad bad 
                         if pendingPin.TryAddConnection(beginningPin):
                             pendingPin.node_owner.AddInput(beginningPin)
+                            self.current_graph.AddConnection(self.current_graph.NodeIndex(inputPin.node_owner.name), outputPin.node_owner.name)
                         else:
                             connection_error_dialog = QDialog()
                             connection_error_dialog.exec_()
@@ -104,8 +163,17 @@ class GraphEditor(QAbstractScrollArea):
         if wasInsideANodeOrPin == False:
             newNodeWidget = NodeWidget(e.pos().x(), e.pos().y())
             newNodeWidget.backendNode.is_function_node = nodeManager.current_node_type == nodeManager.selected_type_function       
-            self._nodes.append(newNodeWidget)
-                
+            #self._nodes.append(newNodeWidget)
+
+            # add func node to graph
+            if newNodeWidget.backendNode.is_function_node:
+                self.current_graph.TryAddNode(newNodeWidget.backendNode.name)
+            # add var node to graph
+            else:
+                self.current_graph.TryAddVar(newNodeWidget.backendNode.name)
+
+            self.current_view.node_widgets.append(newNodeWidget)
+
         super().mousePressEvent(e)
         self.viewport().update()
     

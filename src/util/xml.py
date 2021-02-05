@@ -135,6 +135,16 @@ class XMLUtil():
             toBeReturned = self.FindNode_impl(tag)
         return toBeReturned
 
+    # Given the value, get the name of the attribute assigned to it
+    def ValueName(self, tag):
+        toBeReturned = ""
+        toBeReturned = self.FindNodeReverse_impl(tag)
+        # needs to be reworked ... check the other database if no match
+        if (toBeReturned == ""):
+            self.FlipMode()
+            toBeReturned = self.FindNodeReverse_impl(tag)
+        return toBeReturned
+
     # implementation of find node, should not be called directly
     # but is called by utility functions provided by this class
     def FindNode_impl(self, tag):   
@@ -166,6 +176,43 @@ class XMLUtil():
                     strAttrib = str(item.get(attrib))
                     if attrib == tag:
                         returnedList.append(strAttrib)
+
+        # return the first for now, only temporary
+        if len(returnedList) > 0:
+            return returnedList[0]
+
+        # not found
+        return ""
+
+    def FindNodeReverse_impl(self, tag):
+        root = self.Root()
+        logger.Log("mode: " + self.Mode())
+        logger.Log("root " + str(root))
+        
+        # search the entire database - we can't narrow the search here
+        _list = [] 
+        self.find_children_rec(root, _list)
+        logger.Log("looking for tag: " + tag)
+
+        logger.Log("parent list: " + str(_list))
+
+        returnedList = []
+        for item in _list:
+            if (self.has_children(item)):
+                logger.Log("I have children : " + str(item))
+                childList = []
+                self.find_children_rec(item, childList)
+                for child in childList:
+                    for attrib in child.attrib:
+                        # get values
+                        if child.get(attrib) == tag:
+                            returnedList.append(attrib)
+            else:
+                logger.Log("I have no children : " + str(item))
+                for attrib in item.attrib:
+                    # get values
+                    if item.get(attrib) == tag:
+                        returnedList.append(attrib)
 
         # return the first for now, only temporary
         if len(returnedList) > 0:
@@ -210,7 +257,6 @@ class XMLUtil():
                     str_names.append(attrib)
                     
         return str_names
-
 
     # Builds a level list (dictionary of ints corresponding to level in tree) with name
     # of node

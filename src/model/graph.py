@@ -1,3 +1,5 @@
+from model.db.db_module.db_model import *
+
 # A graph is a backend representation of a connected graph of nodes and variables
 class Graph():
     def __init__(self, name):
@@ -6,11 +8,11 @@ class Graph():
         self.connections = {} # connections are indexed by <node array index> : [ var 1 , var 2 ... ]
         self.name = name
 
-    def AddConnection(self, int_node_index, str_var):
+    def AddConnection(self, int_node_index, int_var_index):
         if int_node_index in self.connections:
-            self.connections[int_node_index].append(str_var)
+            self.connections[int_node_index].append(int_var_index)
         else:
-            self.connections[int_node_index] = [str_var]
+            self.connections[int_node_index] = [int_var_index]
 
     # Try to find a match in the database using reverse lookup - if it is a hit
     # add it to the variable list
@@ -24,14 +26,38 @@ class Graph():
         # else:
         # add to vars list
         database.parser.SetMode(database.parser.varMode)
-        validator_flag = database.parser.Value(str_var_name) != database.parser.invalid_node
+        var_name = database.parser.ValueName(str_var_name)
+        validator_flag = var_name != database.parser.invalid_node
         if validator_flag:
+            self.vars.append(var_name)
+            curr_var_index = len(self.vars) - 1
             if connected_func_node_index != None:
-                self.AddConnection(connected_func_node_index)
-            else:
-                self.vars.append(str_var_name)
+                self.AddConnection(connected_func_node_index, curr_var_index)
+              
         else:
-            raise Exception('Could not find variable: ' + str_var_name + ' while parsing cmake file')
+            #raise Exception('Could not find variable: ' + str_var_name + ' while parsing cmake file')
+            print('Could not find variable: ' + str_var_name + ' while parsing cmake file')
+
+    # Should eventually check to make sure the function node being added is valid...
+    def TryAddNode(self, str_node_name):
+        self.nodes.append(str_node_name)
+
+    # THESE STILL ARENT UNIQUE!!!! TODO TODO USE GUIDS
+    def NodeIndex(self, str_node_name):
+        index = 0
+        for node in self.nodes:
+            if node == str_node_name:
+                return index
+            index += 1
+        return -1 # meh
+
+    def VarIndex(self, str_node_name):
+        index = 0
+        for node in self.vars:
+            if node == str_node_name:
+                return index
+            index += 1
+        return -1 # meh
        
 # Contains every graph in the scene, queriable by name
 class GraphManager():
