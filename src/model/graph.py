@@ -3,8 +3,8 @@ from model.db.db_module.db_model import *
 # A graph is a backend representation of a connected graph of nodes and variables
 class Graph():
     def __init__(self, name):
-        self.nodes = []
-        self.vars = []
+        self.nodes = [] # list of strings of names of function nodes
+        self.vars = []  # list of strings of names of variable nodes
         self.connections = {} # connections are indexed by <node array index> : [ var 1 , var 2 ... ]
         self.name = name
 

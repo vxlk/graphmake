@@ -64,7 +64,7 @@ class PinWidget(QWidget):
     # add a connection to this pin on this node if the variable classification
     # fits one of the slots that the node's code has open.  Does not take into
     # account position right now
-    def TryAddConnection(self, otherPin):
+    def TryAddConnection(self, otherPin: Pin):
         inputPin = self if self.isInput else otherPin
         outputPin = self if self.isInput == False else otherPin
         if inputPin.node_owner.ContainsVar(outputPin.node_owner.parent_name):

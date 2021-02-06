@@ -38,9 +38,9 @@ class CMakeParser():
             # sanitize out unneeded end parenthesis
             for split in split_line:
                 split = split.replace(')', '')
-                self.data.graph.TryAddVar(split, split_line[0])
+                self.data.graph.TryAddVar(split, self.data.graph.NodeIndex(split_line[0]))
 
             # split_line[0] = function
             # split_line[n] is each POTENTIAL variable -> parse and try to find a match?
-            return self.data.graph
+        return self.data.graph
         

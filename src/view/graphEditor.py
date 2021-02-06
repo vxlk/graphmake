@@ -14,7 +14,8 @@ from model.graph import *
 # also holds the position of existing nodes in existing graphs
 class GraphView():
     def __init__(self, str_name):
-        self.node_widgets = []
+        self.node_widgets = [] # list of unordered nodes sent to the rendering pipeline
+        self.var_widget_indices = {} # dictionary of connections used internally to keep track for rendering
         self.graph_name = str_name
 
         self.curr_pos_func = QPoint(25,25) # temp
@@ -23,32 +24,67 @@ class GraphView():
     def CreateView(self, graph: Graph):
         # create func nodes
         for func_node in graph.nodes:
-            newNodeWidget = NodeWidget(curr_pos_func.x(), curr_pos_func.y())
+            # tell us which backend node to use
+            nodeManager.current_node_name = func_node
+            nodeManager.current_node_type = nodeManager.selected_type_function
+
+            # make the node
+            newNodeWidget = NodeWidget(self.curr_pos_func.x(), self.curr_pos_func.y())
             newNodeWidget.backendNode.is_function_node = True       
             self.node_widgets.append(newNodeWidget)
             self.TempIncreasePosFunc() # ++
+
         # create var nodes
         for var_node in graph.vars:
-            newNodeWidget = NodeWidget(curr_pos_func.x(), curr_pos_func.y())
+            # tell us which backend node to use
+            nodeManager.current_node_name = var_node
+            nodeManager.current_node_type = nodeManager.selected_type_variable
+
+            # make the node
+            newNodeWidget = NodeWidget(self.curr_pos_var.x(), self.curr_pos_var.y())
             newNodeWidget.backendNode.is_function_node = False       
             self.node_widgets.append(newNodeWidget)
             self.TempIncreasePosVar() # ++
+
+            # add this node to the var node index dictionary
+            self.var_widget_indices[var_node] = 1
+
         # render connections
         for node_index in graph.connections.keys():
             list_connected_vars = graph.connections[node_index]
-            for var in list_connected_vars:
-                i = 0 # todo!
-
+            for var_index in list_connected_vars:
+                # Given a 1d array of nodes and names: keep track of the index of the node name we are currently on
+                # use the next free one when applying a connection
+                # n n n v1 v2 v1 v3
+                # |     |
+                # |        |
+                #   |          |
+                var_name = graph.vars[var_index]
+                current_index = 1
+                current_var_index = self.var_widget_indices[var_name]
+                # find the correct widget to connect to
+                for widget in self.node_widgets:
+                    if widget.backendNode.name == var_name:
+                        if current_index == current_var_index:
+                            # use this node: this should work bc we insert nodes then vars -> so graph.nodes == (subset of func nodes)node_widget
+                            # also connect pins: for now just connect first pin
+                            if (self.node_widgets[node_index].pins[0].TryAddConnection(widget.pins[0])):
+                                self.node_widgets[node_index].backendNode.AddInput(widget.backendNode)
+                            # mark this name as used
+                            self.var_widget_indices[var_name] += 1
+                        else:
+                            current_index += 1
+       
     def NodeWidgets(self):
         return self.node_widgets
 
     def TempIncreasePosFunc(self):
         curr_y = self.curr_pos_func.y()
-        self.curr_pos.setY(curr_y + 100)
+        self.curr_pos_func.setY(curr_y + 105)
 
     def TempIncreasePosVar(self):
         curr_y = self.curr_pos_var.y()
-        self.curr_pos_var.setY(curr_y + 100)
+        self.curr_pos_var.setY(curr_y + 105)
         
 
 class GraphEditor(QAbstractScrollArea):
@@ -90,12 +126,15 @@ class GraphEditor(QAbstractScrollArea):
         self._nodes = curr_view.node_widgets
         # todo: fill in this graph based on that graph
 
-    # add a view to the list if it is unique
+    # add a view to the list if it is unique and update its view based on the current graph
     def AddView(self, graph: Graph):
         result = self.FindView(graph.name)
+        # add if a new graph
         if result == None:
             self.graphViews.append(GraphView(graph))
-            return self.graphViews[len(self.graphViews)-1]
+            result = self.graphViews[len(self.graphViews)-1]
+        # update the view
+        result.CreateView(graph)
         return result
         
     # Find the view associated with this graph in order to render it
