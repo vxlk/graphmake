@@ -2,13 +2,18 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from model.node_model import *
+from model.db.db_module import *
 from util.xml import *
 from util.level_list import *
 
 # for now i shall make a list of the names, eventually i want pictures
 # like draw.io has
 # This tree works directly with the node manager to figure out which nodes/vars to draw
-class NodeSelectorTree():
+class NodeSelectorTree(QObject):
+
+    # emit that a function tree item was clicked, and filter based on this
+    filterSignal = pyqtSignal(object)
+
     def __init__(self, type_of_tree):
         super().__init__()
         self.tree_impl = QTreeWidget()
@@ -17,8 +22,8 @@ class NodeSelectorTree():
         self.items_func = []
         self.items_var = []
         self.tree_impl.setColumnCount(1)
-
-        self.selected_type = ""
+        self.type_of_tree = type_of_tree # is set to var / function when the tree is created
+        self.selected_type = "" # changes depending on click
         if type_of_tree == "Function":
             self.selected_type = nodeManager.selected_type_function
         if type_of_tree == "Variable":
@@ -109,7 +114,23 @@ class NodeSelectorTree():
     def onNodeItemClick(self, item, index):
         node_name = item.text(0)
         nodeManager.current_node_type = self.selected_type
-        nodeManager.current_node_name = node_name # hardcoded 0 .. enforce 1 name?
+        nodeManager.current_node_name = node_name # hardcoded 0
+        if self.selected_type == nodeManager.selected_type_function:
+            self.filterSignal.emit(nodeManager.current_node_name)
+
+    # filter the variable view so that only variables that can be connected show up
+    # as an option
+    # added to greatly improve intuitive usability, at the cost of a bit of restriction
+    @pyqtSlot(object)
+    def onFilterEvent(self, str_node_name):
+        if self.type_of_tree == "Variable":
+            node = Node() # create a node using current settings
+            for child in self.items_var:
+                child.setHidden(True)
+            for arg in node.args:
+                for item in self.items_var:
+                    if item.text(0) == arg:
+                        item.setHidden(False)
 
     # Search the list of function nodes in the tree for the qtreeitem
     # wanna get the last item with this name so this is a little funky
@@ -117,12 +138,11 @@ class NodeSelectorTree():
         found_node = None
         if str_node_name == None:
             return self.tree_impl
+
         for item in self.items_func:
-            #print(item.text(0) + "," + str_node_name)
             if item.text(0) == str_node_name:
-                #print("found")
                 found_node = item
-        #print("not found")
+
         if found_node == None:
             return self.tree_impl
         else:
@@ -134,12 +154,11 @@ class NodeSelectorTree():
         found_node = None
         if str_node_name == None:
             return self.tree_impl
+
         for item in self.items_var:
-            #print(item.text(0) + "," + str_node_name)
             if item.text(0) == str_node_name:
-                #print("found")
                 found_node = item
-        #print("not found")
+  
         if found_node == None:
             return self.tree_impl
         else:

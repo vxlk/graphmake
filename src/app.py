@@ -34,13 +34,17 @@ app = QApplication([])
 # make the text and graph widgets themselves
 graph = GraphEditor()
 graph.setMinimumSize(512, 512)
+
 text = TextEditor()
 text.setMinimumSize(212, 212)
 text.connectGraph(graph)
+
 nodeTree = NodeSelectorTree("Function") # todo: rename to specify this is the function tree
 nodeTree.Widget().setMinimumSize(212, 212)
 nodeTreeVar = NodeSelectorTree("Variable")
 nodeTreeVar.Widget().setMinimumSize(212, 212)
+nodeTree.filterSignal.connect(nodeTreeVar.onFilterEvent)
+
 console = Console()
 console.connectLog(logger) # this could probably be reworked (depending on how we handle cmake entry)
 

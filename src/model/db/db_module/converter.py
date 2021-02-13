@@ -11,9 +11,7 @@ class XMLConverter():
     # Used to do the automatic arg insertion as well
     # But i have since deprecated that feature
     def ConvertToNode(self, xml_node):
-        logger.Log(xml_node)
         nodeString = str(xml_node)
-        logger.Log(nodeString + "<- before args")
         toBeReturned = self.FillInArgs(nodeString)
         return toBeReturned
 
