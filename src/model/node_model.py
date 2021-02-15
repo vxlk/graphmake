@@ -66,7 +66,7 @@ class Node(QObject):
         # variables
         self.name = nodeManager.current_node_name
         self.code = database.Node(self.name)
-        self.guid = uuid.uuid4()
+        self.guid = None
         self.input_pins = []
         self.is_function_node = True
         self.parent_name = database.NodeParent(self.name) # the current *type* identifier

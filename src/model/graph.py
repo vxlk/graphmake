@@ -1,10 +1,16 @@
 from model.db.db_module.db_model import *
+import uuid
+
+# CRAP  CRAP CRAP MAKE A GRAPH NODE STRUCT
+# MAKE NODES AUTO SELECT WHEN PLACED PLEASE
 
 # A graph is a backend representation of a connected graph of nodes and variables
 class Graph():
     def __init__(self, name):
         self.nodes = [] # list of strings of names of function nodes
+        self.node_guids = [] # list of guids for func nodes
         self.vars = []  # list of strings of names of variable nodes
+        self.var_guids = [] # list of guids for var nodes
         self.connections = {} # connections are indexed by <node array index> : [ var 1 , var 2 ... ]
         self.name = name
 
@@ -30,6 +36,7 @@ class Graph():
         validator_flag = var_name != database.parser.invalid_node
         if validator_flag:
             self.vars.append(var_name)
+            self.var_guids.append(uuid.uuid4())
             curr_var_index = len(self.vars) - 1
             if connected_func_node_index != None:
                 self.AddConnection(connected_func_node_index, curr_var_index)
@@ -41,6 +48,13 @@ class Graph():
     # Should eventually check to make sure the function node being added is valid...
     def TryAddNode(self, str_node_name):
         self.nodes.append(str_node_name)
+        self.node_guids.append(uuid.uuid64())
+
+    def RemoveNode(self, guid):
+        index = 0
+        for node in self.node_guids:
+            if node == guid:
+                
 
     # THESE STILL ARENT UNIQUE!!!! TODO TODO USE GUIDS
     def NodeIndex(self, str_node_name):

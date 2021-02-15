@@ -101,6 +101,7 @@ class GraphEditor(QAbstractScrollArea):
         self.current_graph = graphManager.TopLevelGraph()
         self.graphViews = []
         self.graphViews.append(GraphView(self.current_graph.name))
+        self.mouse_is_held_down = False
 
         self.SetGraph(self.current_graph)
 
@@ -159,6 +160,8 @@ class GraphEditor(QAbstractScrollArea):
 
     # event hooks    
     def mousePressEvent(self, e):
+        self.mouse_is_held_down = True
+        self.ClearAllSelections()
         if self.checkIfPinIsHit(e.pos()):
             if self.drawConnection:
                 # we have a connection
@@ -188,7 +191,7 @@ class GraphEditor(QAbstractScrollArea):
         for node in self._nodes:
             if node.asRect().contains(e.pos()):
                 #set as the one to be moved ...
-                node.isSelected = True
+                node.SetSelected(True)
                 wasInsideANodeOrPin = True
             else:
                 for pin in node.pins:
@@ -217,8 +220,7 @@ class GraphEditor(QAbstractScrollArea):
         self.viewport().update()
     
     def mouseReleaseEvent(self, e):
-        for node in self._nodes:
-            node.isSelected = False
+        self.mouse_is_held_down = False
         super().mouseMoveEvent(e)
         self.viewport().update()
 
@@ -227,7 +229,7 @@ class GraphEditor(QAbstractScrollArea):
             self.connectionEndPoint = e.pos()
         
         for node in self._nodes:
-            if node.isSelected:
+            if node.isSelected and self.mouse_is_held_down:
                 #for now i am just going to translate,
                 #eventually will want to offset position
                 #based on movement from last frame
@@ -247,7 +249,7 @@ class GraphEditor(QAbstractScrollArea):
         
         # render nodes and pins
         for node in self._nodes:
-            painter.setBrush(node.color())
+            painter.setBrush(node.brush())
             # draw rect with text in the middle
             painter.fillRect(node.asRectF(), node.brush())
             painter.drawRect(node.asRect())
@@ -288,5 +290,29 @@ class GraphEditor(QAbstractScrollArea):
                     endPoint = conn.outputPos()
                     painter.setBrush(conn.color())
                     painter.drawLine(startPoint, endPoint)
+
         codeString = self.genCmakeText()
         self.updateSignal.emit(codeString)
+
+    def keyPressEvent(self, e):
+        super().keyPressEvent(e)
+
+        to_be_deleted = self.SelectedNode()
+        if to_be_deleted == None:
+            return
+
+        key = e.key()
+        if key == Qt.Key_Delete:
+            self.current_graph.nodes.remove(to_be_deleted.backendNode.guid)
+            self.SetGraph(self.current_graph)
+
+    def ClearAllSelections(self):
+        for node in self._nodes:
+            node.SetSelected(False)
+
+    # There SHOULD always only be one selected node at a time
+    def SelectedNode(self):
+        for node in self._nodes:
+            if node.isSelected:
+                return node
+        return none

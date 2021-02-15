@@ -30,7 +30,8 @@ class NodeWidget(QWidget):
             self.m_color = Qt.blue
         else:
             self.m_color = Qt.red
-        self.m_brush = QBrush(Qt.blue)
+
+        self.m_brush = QBrush(self.m_color)
         self.m_brush.setStyle(Qt.SolidPattern)
 
     # setters
@@ -40,7 +41,7 @@ class NodeWidget(QWidget):
     
     def setColor(self, color):
         self.m_color = color
-        self.m_brush = QBrush(self.color)
+        self.m_brush.setColor(color)
 
     def setPos(self, x, y):
         self.m_x = x
@@ -120,3 +121,12 @@ class NodeWidget(QWidget):
 
     def RemoveConnection(self, other_node):
         self.backendNode.RemoveInput(other_node)
+
+    def SetSelected(self, bool_is_selected):
+        self.isSelected = bool_is_selected
+        if bool_is_selected:
+            # we do it this way to save the old color
+            self.m_brush.setColor(Qt.green)
+        else:
+            self.setColor(self.m_color)
+        
