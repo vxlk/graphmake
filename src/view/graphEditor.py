@@ -23,25 +23,35 @@ class GraphView():
 
     def CreateView(self, graph: Graph):
         # create func nodes
-        for func_node in graph.nodes:
+        for func in graph.nodes:
+            func_node = func.name
             # tell us which backend node to use
             nodeManager.current_node_name = func_node
             nodeManager.current_node_type = nodeManager.selected_type_function
 
+            if func.HasPosition():
+                self.curr_pos_func = QPoint(func.x, func.y)            
+
             # make the node
             newNodeWidget = NodeWidget(self.curr_pos_func.x(), self.curr_pos_func.y())
+            newNodeWidget.backendNode.guid = func.guid
             newNodeWidget.backendNode.is_function_node = True       
             self.node_widgets.append(newNodeWidget)
             self.TempIncreasePosFunc() # ++
 
         # create var nodes
-        for var_node in graph.vars:
+        for var in graph.vars:
+            var_node = var.name
             # tell us which backend node to use
             nodeManager.current_node_name = var_node
             nodeManager.current_node_type = nodeManager.selected_type_variable
 
+            if var.HasPosition():
+                self.curr_pos_var = QPoint(var.x, var.y)
+
             # make the node
             newNodeWidget = NodeWidget(self.curr_pos_var.x(), self.curr_pos_var.y())
+            newNodeWidget.backendNode.guid = var.guid
             newNodeWidget.backendNode.is_function_node = False       
             self.node_widgets.append(newNodeWidget)
             self.TempIncreasePosVar() # ++
@@ -206,14 +216,22 @@ class GraphEditor(QAbstractScrollArea):
             newNodeWidget = NodeWidget(e.pos().x(), e.pos().y())
             newNodeWidget.backendNode.is_function_node = nodeManager.current_node_type == nodeManager.selected_type_function       
             #self._nodes.append(newNodeWidget)
+            self.ClearAllSelections()
+            newNodeWidget.SetSelected(True)
 
             # add func node to graph
             if newNodeWidget.backendNode.is_function_node:
-                self.current_graph.TryAddNode(newNodeWidget.backendNode.name)
+                guid = self.current_graph.TryAddNode(newNodeWidget.backendNode.name, e.pos().x(), e.pos().y())
+                # this one cant fail yet
+                newNodeWidget.backendNode.guid = guid
+
             # add var node to graph
             else:
-                self.current_graph.TryAddVar(newNodeWidget.backendNode.name)
-
+                guid = self.current_graph.TryAddVar(newNodeWidget.backendNode.name, None, e.pos().x(), e.pos().y())
+                # this one can fail
+                if guid != nodeManager.bad_node_guid:
+                    newNodeWidget.backendNode.guid = guid
+                
             self.current_view.node_widgets.append(newNodeWidget)
 
         super().mousePressEvent(e)
@@ -303,8 +321,13 @@ class GraphEditor(QAbstractScrollArea):
 
         key = e.key()
         if key == Qt.Key_Delete:
-            self.current_graph.nodes.remove(to_be_deleted.backendNode.guid)
+            self.current_graph.RemoveNode(to_be_deleted.backendNode.guid)
             self.SetGraph(self.current_graph)
+
+        # re-render after we have done anything here!
+        self.viewport().update()
+        codeString = self.genCmakeText()
+        self.updateSignal.emit(codeString)
 
     def ClearAllSelections(self):
         for node in self._nodes:
@@ -315,4 +338,4 @@ class GraphEditor(QAbstractScrollArea):
         for node in self._nodes:
             if node.isSelected:
                 return node
-        return none
+        return None

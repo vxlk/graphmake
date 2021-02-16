@@ -12,6 +12,7 @@ class NodeManager():
         self.node_names = []
         self.attrib_name_dict = {}
         self.BuildNameDict()
+        self.bad_node_guid = uuid.uuid4()
 
         self.selected_type_function = "Function"
         self.selected_type_variable = "Variable"
