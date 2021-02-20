@@ -205,13 +205,13 @@ class XMLUtil():
                 for child in childList:
                     for attrib in child.attrib:
                         # get values
-                        if child.get(attrib) == tag:
+                        if child.get(attrib) == tag or child.tag == tag:
                             returnedList.append(attrib)
             else:
                 logger.Log("I have no children : " + str(item))
                 for attrib in item.attrib:
                     # get values
-                    if item.get(attrib) == tag:
+                    if attrib == tag or item.tag == tag:
                         returnedList.append(attrib)
 
         # return the first for now, only temporary

@@ -118,17 +118,19 @@ class Graph():
     def NodeIndex(self, str_node_name):
         index = 0
         for node in self.nodes:
-            if node == str_node_name:
+            if node.name == str_node_name:
                 return index
             index += 1
+        raise Exception("Could not find node index")
         return -1 # meh
 
     def VarIndex(self, str_node_name):
         index = 0
         for node in self.vars:
-            if node == str_node_name:
+            if node.name == str_node_name:
                 return index
             index += 1
+        raise Exception("Could not find variable index")
         return -1 # meh
        
 # Contains every graph in the scene, queriable by name

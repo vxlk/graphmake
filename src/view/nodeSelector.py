@@ -131,6 +131,31 @@ class NodeSelectorTree(QObject):
                 for item in self.items_var:
                     if item.text(0) == arg:
                         item.setHidden(False)
+                        self.__show_children__(arg)
+
+    def __show_children__(self, q_tree_item_name):
+        level_list = nodeManager.BuildLevelListVariables();
+        node = level_list.FindNode(q_tree_item_name)
+        child_row = node.Down()
+        child_node = self.FindTreeItemVariable(child_row.Data())
+        if child_node != None:
+            child_node.setHidden(False)
+        # check left
+        left_iter = child_row.Left()
+        while left_iter != None:
+            child_node_left = self.FindTreeItemVariable(left_iter.Data())
+            child_node_left.setHidden(False)
+            left_iter = left_iter.Left()
+        right_iter = child_row.Right()
+        while right_iter != None:
+            child_node_right = self.FindTreeItemVariable(right_iter.Data())
+            child_node_right.setHidden(False)
+            right_iter = right_iter.Right()
+            
+        # check right
+         #for child in q_tree_item.children():
+         #   child.setHidden(false)
+         #   self.__recursively_show_children(child)
 
     # Search the list of function nodes in the tree for the qtreeitem
     # wanna get the last item with this name so this is a little funky
