@@ -7,7 +7,7 @@ from util.level_list import *
 # handles reading of xml, also handles opening the correct file,
 # the responsibility of setting the correct file is that of the 
 # database's
-class XMLUtil():
+class XMLReader():
     def __init__(self):
         # this will need revisiting with scale ... fine for now
         self.funcMode = "Function"
@@ -286,3 +286,14 @@ class XMLUtil():
         for value in values:
             logger.Log(str(value.tag))
         return Values(str_node_name)
+
+class XMLWriter():
+    def __init__(self):
+        self.reader = XMLReader() # gotta read to write! also encapsulate some of those goodies
+
+    def WriteVar(self, str_var, str_parent):
+        none = None
+
+    def WriteFunc(self, str_func, str_parent):
+        none = None
+        

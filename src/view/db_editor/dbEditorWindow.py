@@ -102,8 +102,12 @@ class DBEditorWidget(QWidget):
 
         insert_button = QPushButton()
         insert_button.setText("Insert Into Database")
+        insert_button.clicked.connect(lambda:self.sendToDB())
         layout.addWidget(insert_button)
         # Fields
+
+    def sendToDB(self):
+        none = None
 
 class DBEditorWindow(QMainWindow):
     def __init__(self, parent = None):

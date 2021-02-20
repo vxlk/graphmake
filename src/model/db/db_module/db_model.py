@@ -4,7 +4,8 @@ from model.db.db_module.converter import *
 # keeps track of transactions
 class Database():
     def __init__(self):
-        self.parser = XMLUtil()
+        self.parser = XMLReader()
+        self.writer = XMLWriter()
         self.converter = XMLConverter()
         self.parser.SetMode(self.parser.funcMode)
 
