@@ -290,10 +290,20 @@ class XMLReader():
 class XMLWriter():
     def __init__(self):
         self.reader = XMLReader() # gotta read to write! also encapsulate some of those goodies
-
+        self.root = self.reader.Root()
+     
     def WriteVar(self, str_var, str_parent):
         none = None
 
     def WriteFunc(self, str_func, str_parent):
+        none = None
+
+    def CurrentDocName(self):
+        if self.reader.Mode() == self.reader.funcMode:
+            return os.path.basename(settings.Value(settings.kDbLocation))
+        else:
+            return os.path.basename(settings.Value(settings.varPath))
+
+    def __create_node__(self, str_node_name):
         none = None
         

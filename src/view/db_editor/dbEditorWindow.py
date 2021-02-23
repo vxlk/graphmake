@@ -4,6 +4,8 @@ from PyQt5.QtCore import *
 from view.nodeSelector import *
 from view.console import *
 
+# parent will be derived from currently selected node
+
 class XMLVarButton(QWidget):
 
     delete_me = pyqtSignal(object)
@@ -106,6 +108,12 @@ class DBEditorWidget(QWidget):
         layout.addWidget(insert_button)
         # Fields
 
+        self.type_box = QComboBox(self)
+        items = ["Function", "Variable", "Classifier"]
+        self.type_box.addItems(items)
+        #self.type_box.addItem("Variable")
+        #self.type_box.additem("Classifier")
+
     def sendToDB(self):
         none = None
 
@@ -139,5 +147,6 @@ class DBEditorWindow(QMainWindow):
         editor_console.connectLog(logger)
         consoleContainer = QDockWidget()
         consoleContainer.setWidget(editor_console)
-        self.addDockWidget(Qt.BottomDockWidgetArea, consoleContainer)
+        #self.addDockWidget(Qt.BottomDockWidgetArea, consoleContainer)
+        
         
