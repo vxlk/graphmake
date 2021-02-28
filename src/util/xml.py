@@ -15,11 +15,19 @@ class XMLReader():
         self.modeVar = False
         self.modeFunc = True
         self.invalid_node = ""
-        
+        self.file_handle = None
+    
+    def __open__(self):
+        self.file_handle = open(FilePath())
+
+    def __close__(self):
+        if self.file_handle != None:
+            self.file_handle.close()
+           
     # Use the settings object to open the appropriate db
     # FOR NOW THESE STAY OPEN FOR THE LIFETIME OF THE PROJECT
     # TODO: PROPERLY HANDLE YOUR IO AND CLOSE THESE THINGS
-    def OpenFile(self):
+    def FilePath(self):
         if self.modeVar is True:
             return settings.varPath
         else:
@@ -292,11 +300,18 @@ class XMLWriter():
         self.reader = XMLReader() # gotta read to write! also encapsulate some of those goodies
         self.root = self.reader.Root()
      
-    def WriteVar(self, str_var, str_parent):
-        none = None
+    def WriteVar(self, str_var, str_parent_hierarchy = ""):
+        self.reader.SetMode(self.reader.varMode)
+        self.__write__(str_var, str_parent)
+    
+    def WriteFunc(self, str_func, str_parent = ""):
+        self.reader.SetMode(self.reader.funcMode)
+        self.__write__(str_func, str_parent)
 
-    def WriteFunc(self, str_func, str_parent):
-        none = None
+    def CreateNode(self, str_node_name, str_parent = ""):
+        parent = self.reader.Value(str_parent)
+        if parent == None:
+            raise Exception("Parent not found in create node")
 
     def CurrentDocName(self):
         if self.reader.Mode() == self.reader.funcMode:
@@ -304,6 +319,27 @@ class XMLWriter():
         else:
             return os.path.basename(settings.Value(settings.varPath))
 
-    def __create_node__(self, str_node_name):
-        none = None
+    def __write__(self, str_node_name, str_parent):
+        self.reader.__open__()
+
+        root = self.reader.Root()
+        parent = root.find(str_parent)
+        if parent == None and str_parent == "":
+            parent = root
+        if parent == None and str_parent != "":
+            raise Exception("Parent not found in write node")
+        ET.SubElement(parent, str_node_name)
+        # handle additional args??
+
+        self.__write_file__(root)
+
+        self.reader.__close__()
+
+    def __write_file__(self, str_contents):
+        if self.reader.file_handle != None:
+            self.reader.file_handle.write(str_contents)
+        
+
+    #def __create_node__(self, str_node_name, parent_node):
+    #    none = None
         
