@@ -49,11 +49,11 @@ console = Console()
 console.connectLog(logger) # this could probably be reworked (depending on how we handle cmake entry)
 
 # create dock widget "containers" for the text and graph widgets
-graphContainer = QDockWidget("Graph Container")
+graphContainer = QDockWidget(settings.cmakeFilePath)
 graphContainer.setAllowedAreas(Qt.LeftDockWidgetArea)
 graphContainer.setWidget(graph)
 
-textContainer = QDockWidget("Text Container")
+textContainer = QDockWidget("Cmake Text")
 textContainer.setAllowedAreas(Qt.RightDockWidgetArea)
 textContainer.setWidget(text)
 
@@ -182,6 +182,8 @@ def open_cmake_file():
         # switch the cmake file to the new file in our settings when one is opened
         # Also update the settings file which i hate for now
         settings.cmakeFilePath = cmake_file_path
+        # update dock widget's path
+        graphContainer.setWindowTitle(settings.cmakeFilePath)
         settings.Add(settings.kCmakeFileLoc, cmake_file_path)
         # update our text view with the contents of the new cmake file
         with open (cmake_file_path, "r") as cmake_file:
@@ -191,6 +193,17 @@ def open_cmake_file():
 cmake_parser_action.triggered.connect(open_cmake_file)
 
 # --- CMake Parser --- #
+
+# --- CMake Compiler --- #
+cmake_compiler_button = window.menuBar().addMenu("&Compile")
+cmake_compiler_action = QAction("&Run")
+cmake_compiler_button.addAction(cmake_compiler_action)
+
+def compile_cmake_file():
+    cmake_interface.Compile()
+
+cmake_compiler_action.triggered.connect(compile_cmake_file)
+# --- CMake Compiler --- #
 
 # Force the style to be the same on all OSs:
 app.setStyle("Fusion")
