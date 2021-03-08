@@ -38,20 +38,22 @@ class NodeSelectorTree(QObject):
             node = level.First()
             while node != None:
                 # create a tree item with parent from the node parent
-                self.AddToTree(node, True)
+                bool_should_be_selectable = node.Down() == None
+                self.AddToTree(node, True, bool_should_be_selectable)
 
                 # recurse through children until there are no more children
                 child = node.Down()
                 while child != None:
                     # create a tree item with parent from the node parent
-                    self.AddToTree(child, True)
+                    bool_should_be_selectable = node.Down() == None
+                    self.AddToTree(child, True, bool_should_be_selectable)
                     childs_parent = child.Up()
 
                     ## look left for a neighbor on the row that we are looking @, until we can't anymore
                     neighbor = child.Left()
                     while neighbor != None and neighbor.Up() == childs_parent:
                         # create a tree item with parent from the node parent
-                        self.AddToTree(neighbor, True)
+                        self.AddToTree(neighbor, True, bool_should_be_selectable)
                         # get the next node in this row
                         neighbor = neighbor.Left()
 
@@ -70,20 +72,22 @@ class NodeSelectorTree(QObject):
             node = level.First()
             while node != None:
                 # create a tree item with parent from the node parent
-                self.AddToTree(node, False)
+                bool_should_be_selectable = node.Down() == None
+                self.AddToTree(node, False, bool_should_be_selectable)
                 # recurse through children until there are no more children
                 child = node.Down()
             
                 while child != None:
                     # create a tree item with parent from the node parent
-                    self.AddToTree(child, False)
+                    bool_should_be_selectable = node.Down() == None
+                    self.AddToTree(child, False, bool_should_be_selectable)
                     childs_parent = child.Up()
 
                     ## look left for a neighbor on the row that we are looking @, until we can't anymore
                     neighbor = child.Left()
                     while neighbor != None and neighbor.Up() == childs_parent:
                         # create a tree item with parent from the node parent
-                        self.AddToTree(neighbor, False)
+                        self.AddToTree(neighbor, False, bool_should_be_selectable)
                         # get the next node in this row
                         neighbor = neighbor.Left()
 
@@ -95,6 +99,7 @@ class NodeSelectorTree(QObject):
                     
         self.tree_impl.itemClicked.connect(self.onNodeItemClick)
         self.tree_impl.topLevelItem(0).setSelected(True)
+        #QTreeView.mousePressEvent(QMouseEvent(0,0)) # reset the selections
 
     # the node we are currently highlighted on in the tree
     def CurrentNodeName(self):
@@ -191,7 +196,7 @@ class NodeSelectorTree(QObject):
 
     # add an item to the tree
     # pick a section that it will belong to (the function section (left), or the variable section (right))
-    def AddToTree(self, node, bool_is_func_node):
+    def AddToTree(self, node, bool_is_func_node, bool_is_selectable):
         # create a tree item with parent from the node parent
         node_parent_name = ""
         if node.Up() != None:
@@ -204,8 +209,10 @@ class NodeSelectorTree(QObject):
             item = QTreeWidgetItem(self.FindTreeItemVariable(node_parent_name))
   
         item.setText(0, node.Data())
-        if item.text(0) != "Parent": # fucking hate this
+        if bool_is_selectable:
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+        else:
+            item.setFlags(item.flags())
     
         # add to internal list for easier searching based on what type it is
         if bool_is_func_node == True:
