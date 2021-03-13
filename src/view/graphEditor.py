@@ -213,6 +213,9 @@ class GraphEditor(QAbstractScrollArea):
                         self.connectionEndPoint = e.pos()
 
         if wasInsideANodeOrPin == False:
+            # if we don't have a valid selection - bail
+            if nodeManager.current_node_type == nodeManager.selected_type_none:
+                return
             newNodeWidget = NodeWidget(e.pos().x(), e.pos().y())
             newNodeWidget.backendNode.is_function_node = nodeManager.current_node_type == nodeManager.selected_type_function       
             #self._nodes.append(newNodeWidget)

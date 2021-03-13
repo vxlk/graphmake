@@ -115,9 +115,20 @@ class NodeSelectorTree(QObject):
     # until the tree is redesigned, it will do some arbitrary dumb checks
     # to decide whether it is a var or a function
     def onNodeItemClick(self, item, index):
+        # Not the best solution ...
+        # On select it gets set highlighted, then we take off the highlight
+        # results in a flash ... whatever - at least the nodes that shouldnt be 
+        # selectable are no longer selectable
+        # alert the nodeManager that we have a 'not good' node - and the graphEditor
+        # will handle the rest
+        if item.parent() == None:
+            item.setSelected(False)
+            nodeManager.current_node_type = nodeManager.selected_type_none
+            nodeManager.current_node_name = nodeManager.bad_node_name
+            return
         node_name = item.text(0)
         nodeManager.current_node_type = self.selected_type
-        nodeManager.current_node_name = node_name # hardcoded 0
+        nodeManager.current_node_name = node_name
         if self.selected_type == nodeManager.selected_type_function:
             self.filterSignal.emit(nodeManager.current_node_name)
 
@@ -220,7 +231,7 @@ class NodeSelectorTree(QObject):
         if bool_is_selectable:
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
         else:
-            item.setFlags(item.flags())
+            item.setFlags(item.flags() ^ Qt.ItemIsUserCheckable)
     
         # add to internal list for easier searching based on what type it is
         if bool_is_func_node == True:

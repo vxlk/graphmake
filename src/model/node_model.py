@@ -12,10 +12,13 @@ class NodeManager():
         self.node_names = []
         self.attrib_name_dict = {}
         self.BuildNameDict()
+
         self.bad_node_guid = uuid.uuid4()
+        self.bad_node_name = "None"
 
         self.selected_type_function = "Function"
         self.selected_type_variable = "Variable"
+        self.selected_type_none = "None"
 
         self.current_node_name = "cmake_version" # this can be changed later
         self.current_node_type = self.selected_type_function
