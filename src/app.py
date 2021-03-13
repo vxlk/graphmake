@@ -8,22 +8,9 @@ from view.console import Console
 from view.db_editor.dbEditorWindow import *
 from util.settings import *
 from util.logger import *
+from util.app_versioning import *
 from model.cmake_parser import *
 from model.cmake_interface import *
-
-# graphmake version number
-# -------------------------------
-# Release . Major . Minor . Patch
-# -------------------------------
-# Release - [Internal, Alpha, Beta, Release]
-#            Interal - A build for internal use from (graphmake) developers only
-#            Alpha - A build given to a select group for testing
-#            Beta - A build given to the mass audience for testing
-#            Release - A trusted build that can be given to any client
-# Major - Indicates a fundamental change in how the application works
-# Minor - Indicates a new release to the public, a group of patches applied/features added
-# Patch - An update that feels meaningful
-version_number = "Alpha.0.0.1"
 
 # clear logs
 logger.ClearLogs()
@@ -84,7 +71,7 @@ class MainWindow(QMainWindow):
         elif answer & QMessageBox.Cancel:
             e.ignore()
 
-app.setApplicationName("Graphmake " + version_number)
+app.setApplicationName("Graphmake " + app_version)
 window = MainWindow()
 
 window.addDockWidget(Qt.LeftDockWidgetArea, graphContainer)
