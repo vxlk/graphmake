@@ -32,7 +32,6 @@ class NodeSelectorTree(QObject):
         if (type_of_tree == "Function"):
             # --- Functions ----
             level_list = nodeManager.BuildLevelListFunctions()
-            #level_list.Print()
             # loop thru level list
             level = level_list.FirstLevel()
             node = level.First()
@@ -66,7 +65,6 @@ class NodeSelectorTree(QObject):
         if (type_of_tree == "Variable"):
             ## --- Variables ----
             level_list = nodeManager.BuildLevelListVariables()
-            #level_list.Print()
             # loop thru level list
             level = level_list.FirstLevel()
             node = level.First()
@@ -140,7 +138,6 @@ class NodeSelectorTree(QObject):
 
     def __show_children__(self, q_tree_item_name):
         level_list = nodeManager.BuildLevelListVariables();
-        level_list.Print()
         node = level_list.FindNode(q_tree_item_name)
         # check for child
         child_row = node.Down()
