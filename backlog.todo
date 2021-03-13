@@ -1,13 +1,15 @@
 BACKLOG:
-Scheduler
-
 gui needs to be pretty
+
+unit tests need written
+
+Make a proper readme with examples (tags etc on github)
+
+Scheduler
 
 unit test framework needs written
 
 scripting language input for unit tests need written
-
-unit tests need written
 
 db editor widget
 
