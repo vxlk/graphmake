@@ -140,38 +140,48 @@ class NodeSelectorTree(QObject):
 
     def __show_children__(self, q_tree_item_name):
         level_list = nodeManager.BuildLevelListVariables();
+        level_list.Print()
         node = level_list.FindNode(q_tree_item_name)
+        # check for child
         child_row = node.Down()
-        child_node = self.FindTreeItemVariable(child_row.Data())
-        if child_node != None:
-            child_node.setHidden(False)
-        # check left
-        left_iter = child_row.Left()
-        while left_iter != None:
-            child_node_left = self.FindTreeItemVariable(left_iter.Data())
-            child_node_left.setHidden(False)
-            left_iter = left_iter.Left()
-        right_iter = child_row.Right()
-        while right_iter != None:
-            child_node_right = self.FindTreeItemVariable(right_iter.Data())
-            child_node_right.setHidden(False)
-            right_iter = right_iter.Right()
-            
-        # check right
-         #for child in q_tree_item.children():
-         #   child.setHidden(false)
-         #   self.__recursively_show_children(child)
+        while child_row != None:
+            parent_name = None
+            if child_row.Up() != None:
+                parent_name = child_row.Up().Data()
+            child_node = self.FindTreeItemVariable(child_row.Data(), parent_name)
+            if child_node != None:
+                child_node.setHidden(False)
+            # check left
+            left_iter = child_row.Left()
+            while left_iter != None:
+                parent_name = None
+                if child_row.Up() != None:
+                    parent_name = child_row.Up().Data()
+                child_node_left = self.FindTreeItemVariable(left_iter.Data(), parent_name)
+                child_node_left.setHidden(False)
+                left_iter = left_iter.Left()
+            right_iter = child_row.Right()
+            # child right
+            while right_iter != None:
+                parent_name = None
+                if child_row.Up() != None:
+                    parent_name = child_row.Up().Data()
+                child_node_right = self.FindTreeItemVariable(right_iter.Data(), parent_name)
+                child_node_right.setHidden(False)
+                right_iter = right_iter.Right()
+            child_row = child_row.Down()
 
     # Search the list of function nodes in the tree for the qtreeitem
     # wanna get the last item with this name so this is a little funky
-    def FindTreeItemFunction(self, str_node_name):
+    def FindTreeItemFunction(self, str_node_name, optional_parent : str = None):
         found_node = None
         if str_node_name == None:
             return self.tree_impl
 
         for item in self.items_func:
             if item.text(0) == str_node_name:
-                found_node = item
+                if optional_parent == None or (item.parent() != None and item.parent().text(0) == optional_parent):
+                    found_node = item
 
         if found_node == None:
             return self.tree_impl
@@ -180,14 +190,15 @@ class NodeSelectorTree(QObject):
 
     # Search the list of variable nodes in the tree for the qtreeitem
     # wanna get the last item with this name so this is a little funky
-    def FindTreeItemVariable(self, str_node_name):
+    def FindTreeItemVariable(self, str_node_name, optional_parent : str = None):
         found_node = None
         if str_node_name == None:
             return self.tree_impl
 
         for item in self.items_var:
             if item.text(0) == str_node_name:
-                found_node = item
+                if optional_parent == None or (item.parent() != None and item.parent().text(0) == optional_parent):
+                    found_node = item
   
         if found_node == None:
             return self.tree_impl
