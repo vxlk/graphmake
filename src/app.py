@@ -162,7 +162,6 @@ cmake_parser = CMakeParser()
 cmake_interface = CMakeInterface()
 cmake_interface.ConnectConsole(console)
 def open_cmake_file():
-    cmake_file_path = ""
     cmake_file_path = QFileDialog.getOpenFileName(window, "Open")[0]
     if cmake_file_path:
         cmake_parser.OpenFile(cmake_file_path)
