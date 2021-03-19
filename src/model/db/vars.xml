@@ -1,5 +1,21 @@
+<!-- Currently assumes Cmake 3.10 -->
+<!--
+   {props}={editable,has_children,link=https://cmake.org/cmake/help/v3.20/command/cmake_host_system_information.html}
+-->
 <!-- Contains a list of global variables for the various global functions of cmake -->
 <global_vars>
+   <editable_vars>
+      <basic_var
+         GENERIC_VAR="Variable1"
+      />
+   </editable_vars>
+
+   <keys>
+      <host_system
+         num_cores="NUMER_OF_LOGICAL_CORES"
+         num_physical_cores="NUMBER_OF_PHYSICAL_CORES"
+      />
+   </keys>
 <!-- Applies to the set(x,y) function - this is x -->
    <global_set>
       <CXX
