@@ -1,16 +1,20 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+
 from view.graphEditor import GraphEditor
 from view.textEditor import TextEditor
 from view.nodeSelector import NodeSelectorTree
 from view.console import Console
 from view.db_editor.dbEditorWindow import *
+from view.style_sheets.qss_style_collection import QssStyleSheetManager
 from util.settings import *
 from util.logger import *
 from util.app_versioning import *
 from model.cmake_parser import *
 from model.cmake_interface import *
+
+from functools import partial
 
 # clear logs
 logger.ClearLogs()
@@ -94,6 +98,35 @@ def open_file():
 open_action.triggered.connect(open_file)
 open_action.setShortcut(QKeySequence.Open)
 menu.addAction(open_action)
+
+app_settings = window.menuBar().addMenu("&Settings")
+theme_menu = app_settings.addMenu("&Theme")
+
+actions = []
+index = 0
+
+def set_css_style(style_name : str) -> None:
+    settings.Add(settings.kThemeColor, style_name)
+    QssStyleSheetManager.currently_selected = style_name
+    # Force update
+    app.setStyleSheet(QssStyleSheetManager.collection[style_name])
+    for action in actions:
+        action.setChecked(False)
+        if action.objectName() == style_name:
+            action.setChecked(True)
+
+for item in QssStyleSheetManager.collection.keys():
+    # no duplicates please
+    if item in actions:
+        continue
+    actions.append(QAction(item))
+    actions[index].setCheckable(True)
+    actions[index].setObjectName(item)
+    if (item == QssStyleSheetManager.currently_selected):
+        actions[index].setChecked(True)
+    actions[index].triggered.connect(partial(set_css_style, item))
+    theme_menu.addAction(actions[index])
+    index +=1
 
 save_action = QAction("&Save")
 def save():
@@ -192,7 +225,7 @@ cmake_compiler_action.triggered.connect(compile_cmake_file)
 # --- CMake Compiler --- #
 
 # Force the style to be the same on all OSs:
-app.setStyle("Fusion")
+app.setStyleSheet(QssStyleSheetManager.collection[QssStyleSheetManager.currently_selected])
 
 # Now use a palette to switch to dark colors:
 palette = QPalette()
