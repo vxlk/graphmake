@@ -7,31 +7,34 @@ class Settings():
         self.data = {}
         self.data['settings'] = {}
 
-         # keys
+        # settings file location
+        self.appData = os.getenv('APPDATA') + "\\Graphmake"
+        self.settingsFilePath = self.appData + "\\settings.json"
+
+         # keys - fill me in when you add new params!
         self.kCmakeFileLoc = 'cmake_file_location'
         self.kLogFileLoc = 'log_file_location'
         self.kDbLocation = 'xml_database_location'
         self.kVarLocation = 'xml_var_database_location'
         self.kThemeColor = 'theme_color'
 
-        # filepaths
-        self.appData = os.getenv('APPDATA') + "\\Graphmake"
-        self.settingsFilePath = self.appData + "\\settings.json"
-        self.cmakeFilePath =  self.appData + "\\CMakeLists.txt"
-        self.logFilePath = self.appData + "\\log.txt"
-        self.dbPath = os.path.dirname(__file__) + "\\..\\model\\db\\db.xml"
-        self.varPath = os.path.dirname(__file__) + "\\..\\model\\db\\vars.xml"
-        self.theme = "Dark Orange" # todo: make a read on load to make this work
+        # values - fill me in when you add new params!
+        if not self.__on_load__():
+            self.cmakeFilePath =  self.appData + "\\CMakeLists.txt"
+            self.logFilePath = self.appData + "\\log.txt"
+            self.dbPath = os.path.dirname(__file__) + "\\..\\model\\db\\db.xml"
+            self.varPath = os.path.dirname(__file__) + "\\..\\model\\db\\vars.xml"
+            self.theme = "Dark Orange" # default theme
 
-        if not os.path.isdir(self.appData):
-            os.mkdir(self.appData)
-
-        # add data
-        self.Add(self.kCmakeFileLoc, self.cmakeFilePath)
-        self.Add(self.kLogFileLoc, self.logFilePath)
-        self.Add(self.kDbLocation, self.dbPath)
-        self.Add(self.kVarLocation, self.varPath)
-        self.Add(self.kThemeColor, self.theme)
+        else:
+            if not os.path.isdir(self.appData):
+                os.mkdir(self.appData)
+                # add data - fill me when you add new params!
+                self.Add(self.kCmakeFileLoc, self.cmakeFilePath)
+                self.Add(self.kLogFileLoc, self.logFilePath)
+                self.Add(self.kDbLocation, self.dbPath)
+                self.Add(self.kVarLocation, self.varPath)
+                self.Add(self.kThemeColor, self.theme)
 
     def CmakeFile(self):
         return open(self.cmakeFilePath, 'w+')
@@ -56,12 +59,22 @@ class Settings():
         self.data['settings'][key] = value
         self.Dump()
 
-    # TODO: THIS DOESNT WORK FIX
-    def Update(self, key, value):
-        jsonObj = json.load(self.data)
-        jsonObj[key] = value
-        self.data = json.load(jsonObj)
-        self.Dump()
+    # fill me in when you add new params!
+    def __on_load__(self):
+        if not os.path.isdir(self.appData):
+            return False
+        
+        settings_file = open(self.settingsFilePath, "r")
+        self.data = json.load(settings_file)
+        _map = self.data['settings']
+        self.cmakeFilePath =  _map[self.kCmakeFileLoc]
+        self.logFilePath = _map[self.kLogFileLoc]
+        self.dbPath = _map[self.kDbLocation]
+        self.varPath = _map[self.kVarLocation]
+        self.theme = _map[self.kThemeColor] # default theme
+
+        settings_file.close()
+        return True
 
 # global singleton
 settings = Settings()
