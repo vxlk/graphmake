@@ -57,7 +57,7 @@ class NodeWidget(QWidget):
         return QPoint(self.m_x, self.m_y)
 
     def posText(self):
-        return QPoint(self.pos().x() + self.m_width/2,
+        return QPoint(self.pos().x() + self.m_width/4,
                       self.pos().y() + self.m_height/2)
 
     def asRect(self):

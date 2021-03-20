@@ -44,7 +44,7 @@ class NodeSelectorTree(QObject):
                 child = node.Down()
                 while child != None:
                     # create a tree item with parent from the node parent
-                    bool_should_be_selectable = node.Down() == None
+                    bool_should_be_selectable = child.Down() == None
                     self.AddToTree(child, True, bool_should_be_selectable)
                     childs_parent = child.Up()
 
@@ -77,7 +77,7 @@ class NodeSelectorTree(QObject):
             
                 while child != None:
                     # create a tree item with parent from the node parent
-                    bool_should_be_selectable = node.Down() == None
+                    bool_should_be_selectable = child.Down() == None
                     self.AddToTree(child, False, bool_should_be_selectable)
                     childs_parent = child.Up()
 
@@ -121,7 +121,7 @@ class NodeSelectorTree(QObject):
         # selectable are no longer selectable
         # alert the nodeManager that we have a 'not good' node - and the graphEditor
         # will handle the rest
-        if item.parent() == None:
+        if item.childCount() != 0:
             item.setSelected(False)
             nodeManager.current_node_type = nodeManager.selected_type_none
             nodeManager.current_node_name = nodeManager.bad_node_name
@@ -227,6 +227,7 @@ class NodeSelectorTree(QObject):
         else:
             item = QTreeWidgetItem(self.FindTreeItemVariable(node_parent_name))
   
+        # this doesn't actually make the unit not selectable ... not really sure why
         item.setText(0, node.Data())
         if bool_is_selectable:
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
