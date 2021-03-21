@@ -148,7 +148,7 @@ def save_as():
         file_path = path
         save()
 save_as_action.triggered.connect(save_as)
-menu.addAction(save_as_action)
+menu.addAction(save_as_action)                                                                                          
 
 close = QAction("&Close")
 close.triggered.connect(window.close)
