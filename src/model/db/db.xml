@@ -1,7 +1,7 @@
 <!-- Global cmake functions -->
 <global_cmake>
    <host_system_info
-      host_info="cmake_host_system_information(RESULT %editable_vars% QUERY %keys%)"
+      host_system_info="cmake_host_system_information(RESULT %editable_vars% QUERY %keys%)"
    />
     <!-- Supplies the function for the version of cmake used -->
    <cmake_version
