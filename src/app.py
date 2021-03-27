@@ -2,13 +2,13 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
+from util.settings import *
 from view.graphEditor import GraphEditor
 from view.textEditor import TextEditor
 from view.nodeSelector import NodeSelectorTree
 from view.console import Console
 from view.db_editor.dbEditorWindow import *
 from view.style_sheets.qss_style_collection import QssStyleSheetManager
-from util.settings import *
 from util.logger import *
 from util.app_versioning import *
 from model.cmake_parser import *
@@ -18,6 +18,7 @@ from functools import partial
 
 # clear logs
 logger.ClearLogs()
+cmake_output_log.ClearLogs()
 
 # make Qapp
 app = QApplication([])
@@ -37,7 +38,7 @@ nodeTreeVar.Widget().setMinimumSize(212, 212)
 nodeTree.filterSignal.connect(nodeTreeVar.onFilterEvent)
 
 console = Console()
-console.connectLog(logger) # this could probably be reworked (depending on how we handle cmake entry)
+console.connectLog(cmake_output_log)
 
 # create dock widget "containers" for the text and graph widgets
 graphContainer = QDockWidget(settings.cmakeFilePath)

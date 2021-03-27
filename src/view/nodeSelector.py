@@ -53,6 +53,7 @@ class NodeSelectorTree(QObject):
                     while neighbor != None and neighbor.Up() == childs_parent:
                         # create a tree item with parent from the node parent
                         self.AddToTree(neighbor, True, bool_should_be_selectable)
+                        self.addAllChildren(neighbor, True)
                         # get the next node in this row
                         neighbor = neighbor.Left()
 
@@ -86,6 +87,7 @@ class NodeSelectorTree(QObject):
                     while neighbor != None and neighbor.Up() == childs_parent:
                         # create a tree item with parent from the node parent
                         self.AddToTree(neighbor, False, bool_should_be_selectable)
+                        self.addAllChildren(neighbor, False)
                         # get the next node in this row
                         neighbor = neighbor.Left()
 
@@ -98,6 +100,13 @@ class NodeSelectorTree(QObject):
         self.tree_impl.itemClicked.connect(self.onNodeItemClick)
         self.tree_impl.topLevelItem(0).setSelected(True)
         #QTreeView.mousePressEvent(QMouseEvent(0,0)) # reset the selections
+
+    def addAllChildren(self, node, bool_is_func_node) -> None:
+        child = node.Down()
+        while child != None:
+            # create a tree item with parent from the node parent
+            self.AddToTree(child, bool_is_func_node, True)
+            child = child.Left()
 
     # the node we are currently highlighted on in the tree
     def CurrentNodeName(self):

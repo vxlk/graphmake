@@ -17,25 +17,29 @@ class Settings():
         self.kDbLocation = 'xml_database_location'
         self.kVarLocation = 'xml_var_database_location'
         self.kThemeColor = 'theme_color'
+        self.kCmakeLogFileLoc = 'cmake_output'
 
-        # values - fill me in when you add new params!
+        self.cmakeFilePath =  self.appData + "\\CMakeLists.txt"
+        self.logFilePath = self.appData + "\\log.txt"
+        self.dbPath = os.path.dirname(__file__) + "\\..\\model\\db\\db.xml"
+        self.varPath = os.path.dirname(__file__) + "\\..\\model\\db\\vars.xml"
+        self.theme = "Dark Orange" # default theme
+        self.cmakeLogFilePath = self.appData + "\\cmake_output.txt"
+
+        # if our settings file was deleted
+
         if not self.__on_load__():
-            self.cmakeFilePath =  self.appData + "\\CMakeLists.txt"
-            self.logFilePath = self.appData + "\\log.txt"
-            self.dbPath = os.path.dirname(__file__) + "\\..\\model\\db\\db.xml"
-            self.varPath = os.path.dirname(__file__) + "\\..\\model\\db\\vars.xml"
-            self.theme = "Dark Orange" # default theme
-
-        else:
             if not os.path.isdir(self.appData):
                 os.mkdir(self.appData)
-                # add data - fill me when you add new params!
-                self.Add(self.kCmakeFileLoc, self.cmakeFilePath)
-                self.Add(self.kLogFileLoc, self.logFilePath)
-                self.Add(self.kDbLocation, self.dbPath)
-                self.Add(self.kVarLocation, self.varPath)
-                self.Add(self.kThemeColor, self.theme)
+            # add data - fill me when you add new params!
+            self.Add(self.kCmakeFileLoc, self.cmakeFilePath)
+            self.Add(self.kLogFileLoc, self.logFilePath)
+            self.Add(self.kDbLocation, self.dbPath)
+            self.Add(self.kVarLocation, self.varPath)
+            self.Add(self.kThemeColor, self.theme)
+            self.Add(self.kCmakeLogFileLoc, self.cmakeLogFilePath)
 
+    # THESE NEED TO BE CLOSED!
     def CmakeFile(self):
         return open(self.cmakeFilePath, 'w+')
 
@@ -61,7 +65,7 @@ class Settings():
 
     # fill me in when you add new params!
     def __on_load__(self):
-        if not os.path.isdir(self.appData):
+        if not os.path.isdir(self.appData) or not os.path.isfile(self.settingsFilePath):
             return False
         
         settings_file = open(self.settingsFilePath, "r")
@@ -72,6 +76,7 @@ class Settings():
         self.dbPath = _map[self.kDbLocation]
         self.varPath = _map[self.kVarLocation]
         self.theme = _map[self.kThemeColor] # default theme
+        self.cmakeLogFilePath = _map[self.kCmakeLogFileLoc]
 
         settings_file.close()
         return True

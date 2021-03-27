@@ -35,5 +35,33 @@ class Logger(QObject):
             f.write("")
             f.close()
 
+class CmakeOutput(Logger):
+
+    updateSignal = pyqtSignal(object)
+
+    def __init__(self):
+        super().__init__()
+        self.contents = ''
+
+    def FilePath(self):
+        return settings.Value(settings.kCmakeLogFileLoc)
+
+    # my inheritance didnt work because it was using the wrong self and i dont care enough to fix it rn
+    def Log(self, msg, func_name = "", _type = ""):
+        if func_name == "":
+            func_name = sys._getframe(1).f_code.co_name
+        self.contents += (str(datetime.datetime.now()) + str(msg)) + "\n"
+        with open(self.FilePath(), "w+") as f:
+                f.write(self.contents)
+                f.close()
+        self.updateSignal.emit(self.contents)
+
+    def ClearLogs(self):
+        with open(self.FilePath(), "w+") as f:
+            f.write("")
+            f.close()
+
 # global instance
 logger = Logger()
+cmake_output_log = CmakeOutput()
+

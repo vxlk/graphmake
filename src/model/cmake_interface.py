@@ -27,7 +27,7 @@ class CMakeInterface():
         os.chdir(self.current_dir)
         stream = os.popen('cmake .')
         self.output_stream = stream.read()
-        logger.Log(self.output_stream)
+        cmake_output_log.Log(self.output_stream)
         os.chdir(og_dir)
 
     # Call this on init so we can report errors to the console
