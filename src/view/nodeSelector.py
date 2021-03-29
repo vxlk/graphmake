@@ -5,11 +5,12 @@ from model.node_model import *
 from model.db.db_module import *
 from util.xml import *
 from util.level_list import *
+from view.tooltip import *
 
 # for now i shall make a list of the names, eventually i want pictures
 # like draw.io has
 # This tree works directly with the node manager to figure out which nodes/vars to draw
-class NodeSelectorTree(QObject):
+class NodeSelectorTree(QWidget):
 
     # emit that a function tree item was clicked, and filter based on this
     filterSignal = pyqtSignal(object)
@@ -18,12 +19,16 @@ class NodeSelectorTree(QObject):
         super().__init__()
         self.tree_impl = QTreeWidget()
         self.tree_impl.resize(250, self.tree_impl.height()) #todo: figure out size
+        
         # might need to reorganize this later... for now just do an array
         self.items_func = []
         self.items_var = []
         self.tree_impl.setColumnCount(1)
         self.type_of_tree = type_of_tree # is set to var / function when the tree is created
         self.selected_type = "" # changes depending on click
+
+        self.tooltip_handle = None
+
         if type_of_tree == "Function":
             self.selected_type = nodeManager.selected_type_function
         if type_of_tree == "Variable":
@@ -97,8 +102,11 @@ class NodeSelectorTree(QObject):
                 # go through nodes on a level
                 node = level.Next()
                     
+        self.setMouseTracking(True)
+        self.tree_impl.setMouseTracking(True)
         self.tree_impl.itemClicked.connect(self.onNodeItemClick)
         self.tree_impl.topLevelItem(0).setSelected(True)
+        self.tree_impl.itemEntered.connect(self.onItemEntered)
         #QTreeView.mousePressEvent(QMouseEvent(0,0)) # reset the selections
 
     def addAllChildren(self, node, bool_is_func_node) -> None:
@@ -248,3 +256,22 @@ class NodeSelectorTree(QObject):
             self.items_func.append(item)
         else:
             self.items_var.append(item)
+    
+    @pyqtSlot(QTreeWidgetItem, int)
+    def onItemEntered(self, item : QTreeWidgetItem, column_num : int) -> None:
+        if self.tooltip_handle is not None:
+            self.tooltip_handle.handle.deleteLater()
+        mouse_pos = QCursor.pos()
+        self.tooltip_handle = Tooltip(self, 'yeehaw', mouse_pos.x(), mouse_pos.y())
+
+    def enterEvent(cls, e):
+        if self.tooltip_handle is not None:
+            self.tooltip_handle.handle.deleteLater()
+        self.tooltip_handle = None
+        return super().enterEvent(e)
+
+    def leaveEvent(cls, e):
+        if self.tooltip_handle is not None:
+            self.tooltip_handle.handle.deleteLater()
+        self.tooltip_handle = None
+        return super().leaveEvent(e)
