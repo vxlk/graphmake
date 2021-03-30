@@ -32,9 +32,11 @@ text.setMinimumSize(212, 212)
 text.connectGraph(graph)
 
 nodeTree = NodeSelectorTree("Function") # todo: rename to specify this is the function tree
-nodeTree.Widget().setMinimumSize(212, 212)
+nodeTree.Widget().setMinimumSize(212, 600)
+nodeTree.setMinimumSize(212, 212)
 nodeTreeVar = NodeSelectorTree("Variable")
-nodeTreeVar.Widget().setMinimumSize(212, 212)
+nodeTreeVar.Widget().setMinimumSize(212, 600)
+nodeTreeVar.setMinimumSize(212, 212)
 nodeTree.filterSignal.connect(nodeTreeVar.onFilterEvent)
 
 console = Console()
@@ -51,11 +53,11 @@ textContainer.setWidget(text)
 
 nodeSelectorContainer = QDockWidget("Functions")
 nodeSelectorContainer.setAllowedAreas(Qt.LeftDockWidgetArea) 
-nodeSelectorContainer.setWidget(nodeTree.Widget())
+nodeSelectorContainer.setWidget(nodeTree)
 
 nodeSelectorContainerVar = QDockWidget("Variables")
 nodeSelectorContainerVar.setAllowedAreas(Qt.LeftDockWidgetArea) 
-nodeSelectorContainerVar.setWidget(nodeTreeVar.Widget())
+nodeSelectorContainerVar.setWidget(nodeTreeVar)
 
 consoleContainer = QDockWidget("Console")
 consoleContainer.setAllowedAreas(Qt.BottomDockWidgetArea)

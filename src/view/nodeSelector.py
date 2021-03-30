@@ -7,6 +7,8 @@ from util.xml import *
 from util.level_list import *
 from view.tooltip import *
 
+import time
+
 # for now i shall make a list of the names, eventually i want pictures
 # like draw.io has
 # This tree works directly with the node manager to figure out which nodes/vars to draw
@@ -17,7 +19,7 @@ class NodeSelectorTree(QWidget):
 
     def __init__(self, type_of_tree):
         super().__init__()
-        self.tree_impl = QTreeWidget()
+        self.tree_impl = QTreeWidget(self)
         self.tree_impl.resize(250, self.tree_impl.height()) #todo: figure out size
         
         # might need to reorganize this later... for now just do an array
@@ -107,6 +109,8 @@ class NodeSelectorTree(QWidget):
         self.tree_impl.itemClicked.connect(self.onNodeItemClick)
         self.tree_impl.topLevelItem(0).setSelected(True)
         self.tree_impl.itemEntered.connect(self.onItemEntered)
+        #self.tree_impl.enterEvent.connect(self.onEnterEvent)
+        #self.tree_impl.leaveEvent.connect(self.onLeaveEvent)
         #QTreeView.mousePressEvent(QMouseEvent(0,0)) # reset the selections
 
     def addAllChildren(self, node, bool_is_func_node) -> None:
@@ -148,6 +152,12 @@ class NodeSelectorTree(QWidget):
         nodeManager.current_node_name = node_name
         if self.selected_type == nodeManager.selected_type_function:
             self.filterSignal.emit(nodeManager.current_node_name)
+
+        if self.tooltip_handle is not None:
+            self.tooltip_handle.handle.deleteLater()
+
+        mouse_pos = QCursor.pos()
+        self.tooltip_handle = Tooltip(self, 'yeehaw', mouse_pos.x(), mouse_pos.y())
 
     # filter the variable view so that only variables that can be connected show up
     # as an option
@@ -259,19 +269,19 @@ class NodeSelectorTree(QWidget):
     
     @pyqtSlot(QTreeWidgetItem, int)
     def onItemEntered(self, item : QTreeWidgetItem, column_num : int) -> None:
-        if self.tooltip_handle is not None:
-            self.tooltip_handle.handle.deleteLater()
-        mouse_pos = QCursor.pos()
-        self.tooltip_handle = Tooltip(self, 'yeehaw', mouse_pos.x(), mouse_pos.y())
+        #if abs(self.tooltip_enter_time - current_time) > self.epsilon:
+        pass
+
+        #mouse_pos = QCursor.pos()
+        #self.tooltip_handle = Tooltip(self, 'yeehaw', mouse_pos.x(), mouse_pos.y())
 
     def enterEvent(cls, e):
-        if self.tooltip_handle is not None:
-            self.tooltip_handle.handle.deleteLater()
-        self.tooltip_handle = None
+        if (cls.tooltip_handle is not None):
+            cls.tooltip_handle.handle.deleteLater()
+            cls.tooltip_handle = None
         return super().enterEvent(e)
 
     def leaveEvent(cls, e):
-        if self.tooltip_handle is not None:
-            self.tooltip_handle.handle.deleteLater()
-        self.tooltip_handle = None
+        # leave event gets called on mouse click so we
+        # do NOT delete tooltip here!
         return super().leaveEvent(e)
