@@ -22,6 +22,8 @@ class Tooltip(object):
         self.height = 100
 
         self.handle = QDialog(parent)
+        tooltip_label = QLabel(self.handle)
+        tooltip_label.setText("message")
         self.handle.setFixedSize(self.height, self.width)
         self.handle.move(x,y)
         self.handle.show()
