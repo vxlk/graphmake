@@ -4,70 +4,60 @@ from util.logger import *
 from util.utilities import __deprecated__
 from util.level_list import *
 
+class DBMode():
+    functionMode = "Function Mode"
+    variableMode = "Variable Mode"
+    descriptionMode = "Description Mode"
+    tagMode = "Tag Mode"
+
 # handles reading of xml, also handles opening the correct file,
 # the responsibility of setting the correct file is that of the 
 # database's
 class XMLUtil():
     def __init__(self):
         # this will need revisiting with scale ... fine for now
-        self.funcMode = "Function"
-        self.varMode = "Var"
-        self.modeVar = False
-        self.modeFunc = True
+        self.current_mode = DBMode.functionMode
         self.invalid_node = ""
         
     # Use the settings object to open the appropriate db
-    # FOR NOW THESE STAY OPEN FOR THE LIFETIME OF THE PROJECT
-    # TODO: PROPERLY HANDLE YOUR IO AND CLOSE THESE THINGS
-    def OpenFile(self):
-        if self.modeVar is True:
+    def GetDBPath(self) -> str:
+        if self.current_mode == DBMode.variableMode:
             return settings.varPath
-        else:
+        if self.current_mode == DBMode.functionMode:
             return settings.dbPath
+        if self.current_mode == DBMode.descriptionMode:
+            return settings.descPath
+        if self.current_mode == DBMode.tagMode:
+            return settings.tagPath
     
-    # Given the name of the new document/db (use the given variables for the names so you don't mess up)
-    # switch our view to the new document/db
-    def SetMode(self, modeStr):
-        if modeStr == self.funcMode:
-            self.modeVar = False
-            self.modeFunc = True
-        elif modeStr == self.varMode:
-            self.modeVar = True
-            self.modeFunc = False
-
-    # Return the string name of the database we are currently looking at
-    def Mode(self):
-        if self.modeFunc == True:
-            return self.funcMode
-        else:
-            return self.varMode
-
-    # If in var mode -> func mode
-    # If in func mode -> var mode
-    def FlipMode(self):
-        if self.modeFunc == True:
-            self.modeFunc = False
-            self.modeVar = True
-        else:
-            self.modeFunc = True
-            self.modeVar = False
-
     # Root of the current document (node not name/string)
-    def Root(self):
-        file = self.OpenFile()
+    def Root(self) -> ET.Element:
+        if (self.current_mode == 1):
+            x = 1
+        print(self.current_mode)
+        file = self.GetDBPath()
+        print(file)
         root = ET.parse(file).getroot()       
         return root
 
     # Name of the root of the current document
-    def RootName(self):
+    def RootName(self) -> str:
         root_node = Root()
         return root_node.tag
+
+    def SetMode(self, mode : str) -> None:
+        self.current_mode = mode
+
+    def FlipMode(self) -> None:
+        if (self.current_mode == DBMode.functionMode):
+            self.current_mode = DBMode.variableMode
+        if (self.current_mode == DBMode.variableMode):
+            self.current_mode = DBMode.functionMode
 
     # returns the name of the parent node of the given child's name right below the root
     # the "parent below the root"
     # put your result variable in the result_str column
-    def ParentBelowRoot(self, name_string_searched_for):
-        # __deprecated__("I am reworking this, i want to come back to it later - when the database beautifying phase goes into effect")
+    def ParentBelowRoot(self, name_string_searched_for : str) -> str:
         level_list = LevelList()
         self.LevelList(level_list)
         found_node = level_list.FindNode(name_string_searched_for)
@@ -90,21 +80,21 @@ class XMLUtil():
     #        yield child
 
     # recursive find of a node ... does not include attributes
-    def find_rec(self, node, element, result):
+    def find_rec(self, node : ET.Element, element : str, result : list) -> list:
         for item in node.findall(element):
             result.append(item)
             self.find_rec(item, element, result)
         return result
 
     # get all children of a given node
-    def find_children_rec(self, node, result):
+    def find_children_rec(self, node : ET.Element, result : list) -> list:
         for child in node:
             result.append(child)
             self.find_children_rec(child, result)
         return result
 
     # find nodes that contain a certain attribute
-    def find_nodes_with_attrib(self, node_root, attr_name_str, result):
+    def find_nodes_with_attrib(self, node_root : ET.Element, attr_name_str : str, result : list) -> None:
         for child in node_root:
             if child.tag == attr_name_str:
                 result.append(child)
@@ -114,64 +104,54 @@ class XMLUtil():
             self.find_nodes_with_attrib(child, attr_name_str, result)
 
     # return true if a node has children
-    def has_children(self, node):
+    def has_children(self, node : ET.Element) -> bool:
         # debug code included
         child_list = list(node)
-        logger.Log("list of children:")
-        logger.Log(child_list)
         return len(node) != 0
 
-    def has_attrib(self, node):
+    def has_attrib(self, node : ET.Element) -> bool:
         attrib_list = list(node.attrib)
         return len(attrib_list) != 0 
 
     # Gets the value of 
-    def Value(self, tag):
+    def Value(self, tag : str, db_mode : str = "current") -> str:
+        if (db_mode != "current"):
+            self.current_mode = db_mode
+
         toBeReturned = ""
         toBeReturned = self.FindNode_impl(tag)
-        # needs to be reworked ... check the other database if no match
-        if (toBeReturned == ""):
-            self.FlipMode()
-            toBeReturned = self.FindNode_impl(tag)
+
         return toBeReturned
 
     # Given the value, get the name of the attribute assigned to it
-    def ValueName(self, tag):
+    def ValueName(self, tag : str, db_mode : str = "current") -> str:
+        if (db_mode != "current"):
+            self.current_mode = db_mode
+
         toBeReturned = ""
         toBeReturned = self.FindNodeReverse_impl(tag)
-        # needs to be reworked ... check the other database if no match
-        if (toBeReturned == ""):
-            self.FlipMode()
-            toBeReturned = self.FindNodeReverse_impl(tag)
+        
         return toBeReturned
 
     # implementation of find node, should not be called directly
     # but is called by utility functions provided by this class
-    def FindNode_impl(self, tag):   
+    # impl implies not exposed to the user
+    def FindNode_impl(self, tag : str) -> str:   
         root = self.Root()
-        logger.Log("mode: " + self.Mode())
-        logger.Log("root " + str(root))
         
         _list = []
-        logger.Log("looking for tag: " + tag)
         self.find_nodes_with_attrib(root, tag, _list)
-
-        logger.Log("parent list: " + str(_list))
 
         returnedList = []
         for item in _list:
             if (self.has_children(item)):
-                logger.Log("I have children : " + str(item))
                 childList = []
                 self.find_children_rec(item, childList)
                 for child in childList:
                     for attrib in child.attrib:
-                        logger.Log("Tag: " + str(item.tag))
                         strAttrib = str(child.get(attrib))
-                        logger.Log("Attrib: " + strAttrib)
                         returnedList.append(strAttrib)
             else:
-                logger.Log("I have no children : " + str(item))
                 for attrib in item.attrib:
                     strAttrib = str(item.get(attrib))
                     if attrib == tag:
@@ -184,22 +164,17 @@ class XMLUtil():
         # not found
         return ""
 
-    def FindNodeReverse_impl(self, tag):
+    # impl implies not exposed to the user
+    def FindNodeReverse_impl(self, tag : str) -> str:
         root = self.Root()
-        logger.Log("mode: " + self.Mode())
-        logger.Log("root " + str(root))
-        
+      
         # search the entire database - we can't narrow the search here
         _list = [] 
         self.find_children_rec(root, _list)
-        logger.Log("looking for tag: " + tag)
-
-        logger.Log("parent list: " + str(_list))
-
+       
         returnedList = []
         for item in _list:
             if (self.has_children(item)):
-                logger.Log("I have children : " + str(item))
                 childList = []
                 self.find_children_rec(item, childList)
                 for child in childList:
@@ -208,7 +183,6 @@ class XMLUtil():
                         if child.get(attrib) == tag or child.tag == tag:
                             returnedList.append(attrib)
             else:
-                logger.Log("I have no children : " + str(item))
                 for attrib in item.attrib:
                     # get values
                     if attrib == tag or item.tag == tag:
@@ -222,7 +196,8 @@ class XMLUtil():
         return ""
 
     # Get the "code" associated with a certain node if it exists
-    def Values(self, tag):
+    def Values(self, tag : str, db_mode : str) -> list:
+        self.current_mode = db_mode
         root = self.Root()
         
         _list = []
@@ -238,8 +213,8 @@ class XMLUtil():
             return returnedList
         return []
 
-    def AllNodeNames(self):
-        self.SetMode(self.funcMode)
+    def AllNodeNames(self, db_mode : str) -> list:
+        self.current_mode = db_mode
         root = self.Root()
         str_names = []
         for child in root:
@@ -260,7 +235,7 @@ class XMLUtil():
 
     # Builds a level list (dictionary of ints corresponding to level in tree) with name
     # of node
-    def LevelList(self, level_list_structure_out, int_level = 0, node = None):
+    def LevelList(self, level_list_structure_out : LevelList, int_level : int = 0, node : str = None) -> None:
         level = int_level
         if (node is None):
             node = self.Root()
@@ -279,9 +254,8 @@ class XMLUtil():
             self.LevelList(level_list_structure_out, level, child)
 
     # all attribs from a node of given name str_node_name
-    def AttributesForNodeName(self, str_node_name):
-        logger.Log("All Attributes for node " + str(str_node_name), __name__)
-        self.SetMode(self.funcMode)
+    def AttributesForNodeName(self, str_node_name : str, db_mode : str) -> list:
+        self.current_mode = db_mode
         values = Values(str_node_name)
         for value in values:
             logger.Log(str(value.tag))

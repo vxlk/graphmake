@@ -42,7 +42,7 @@ class Graph():
         # add to connections list
         # else:
         # add to vars list
-        database.parser.SetMode(database.parser.varMode)
+        database.parser.SetMode(DBMode.variableMode)
         var_name = database.parser.ValueName(str_var_name)
         validator_flag = var_name != database.parser.invalid_node
         if validator_flag:

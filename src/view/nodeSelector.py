@@ -107,7 +107,6 @@ class NodeSelectorTree(QWidget):
         self.setMouseTracking(True)
         self.tree_impl.setMouseTracking(True)
         self.tree_impl.itemClicked.connect(self.onNodeItemClick)
-        self.tree_impl.topLevelItem(0).setSelected(True)
         self.tree_impl.itemEntered.connect(self.onItemEntered)
         #self.tree_impl.enterEvent.connect(self.onEnterEvent)
         #self.tree_impl.leaveEvent.connect(self.onLeaveEvent)

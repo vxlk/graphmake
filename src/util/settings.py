@@ -1,5 +1,6 @@
 import json
 import os
+import io
 
 class Settings():
     def __init__(self):
@@ -16,6 +17,8 @@ class Settings():
         self.kLogFileLoc = 'log_file_location'
         self.kDbLocation = 'xml_database_location'
         self.kVarLocation = 'xml_var_database_location'
+        self.kTagLocation = 'xml_tag_database_location'
+        self.kDescLocation = 'xml_desc_database_location'
         self.kThemeColor = 'theme_color'
         self.kCmakeLogFileLoc = 'cmake_output'
 
@@ -23,6 +26,8 @@ class Settings():
         self.logFilePath = self.appData + "\\log.txt"
         self.dbPath = os.path.dirname(__file__) + "\\..\\model\\db\\db.xml"
         self.varPath = os.path.dirname(__file__) + "\\..\\model\\db\\vars.xml"
+        self.descPath = os.path.dirname(__file__) + "\\..\\model\\db\\desc.xml"
+        self.tagsPath = os.path.dirname(__file__) + "\\..\\model\\db\\tags.xml"
         self.theme = "Dark Orange" # default theme
         self.cmakeLogFilePath = self.appData + "\\cmake_output.txt"
 
@@ -38,33 +43,35 @@ class Settings():
             self.Add(self.kVarLocation, self.varPath)
             self.Add(self.kThemeColor, self.theme)
             self.Add(self.kCmakeLogFileLoc, self.cmakeLogFilePath)
+            self.Add(self.kDescLocation, self.descPath)
+            self.Add(self.kTagLocation, self.tagsPath)
 
-    # THESE NEED TO BE CLOSED!
-    def CmakeFile(self):
+    # remember to close this file handle if you use this function
+    def CmakeFile(self) -> io.TextIOWrapper:
         return open(self.cmakeFilePath, 'w+')
-
-    def SettingsFile(self):
+    # remember to close this file handle if you use this function
+    def SettingsFile(self) -> io.TextIOWrapper:
         return open(self.settingsFilePath, 'w+')
-
-    def DBFile(self):
+    # remember to close this file handle if you use this function
+    def DBFile(self) -> io.TextIOWrapper:
         return open(self.dbPath, 'r')
-    
-    def DBVarFile(self):
+    # remember to close this file handle if you use this function
+    def DBVarFile(self) -> io.TextIOWrapper:
         return open(self.varPath, 'r')
 
     # modifying this will not actually modify the value
-    def Value(self, settingName):
+    def Value(self, settingName) -> str:
         return self.data['settings'][settingName]
 
-    def Dump(self):
+    def Dump(self) -> None:
         json.dump(self.data, self.SettingsFile(), indent=4)
 
-    def Add(self, key, value):
+    def Add(self, key, value) -> None:
         self.data['settings'][key] = value
         self.Dump()
 
     # fill me in when you add new params!
-    def __on_load__(self):
+    def __on_load__(self) -> bool:
         if not os.path.isdir(self.appData) or not os.path.isfile(self.settingsFilePath):
             return False
         
@@ -77,9 +84,11 @@ class Settings():
         self.varPath = _map[self.kVarLocation]
         self.theme = _map[self.kThemeColor] # default theme
         self.cmakeLogFilePath = _map[self.kCmakeLogFileLoc]
+        self.tagsPath = _map[self.kTagLocation]
+        self.descPath = _map[self.kDescLocation]
 
         settings_file.close()
         return True
 
-# global singleton
+# global "singleton"
 settings = Settings()

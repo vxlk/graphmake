@@ -3,6 +3,8 @@ import uuid
 from model.db.db_module.db_model import *
 from util.level_list import *
 
+# todo: need type suggestions
+
 # Manager of nodes:
 # Has knowledge of all nodes that exist
 # Manages how other objects access certain nodes
@@ -20,7 +22,7 @@ class NodeManager():
         self.selected_type_variable = "Variable"
         self.selected_type_none = "None"
 
-        self.current_node_name = "cmake_version" # this can be changed later
+        self.current_node_name = "cmake_minimum_required" # this can be changed later
         self.current_node_type = self.selected_type_function
 
     # 1. Fills the list of all node names
@@ -28,16 +30,15 @@ class NodeManager():
     # Used on construction of the node manager
     def BuildNameDict(self):
         name_array = database.AllNodeNames()
-        logger.Log(name_array)
         self.node_names = name_array
         for node_name in self.node_names:
-            self.attrib_name_dict[node_name] = database.parser.Values(node_name)
+            self.attrib_name_dict[node_name] = database.parser.Values(node_name, database.parser.current_mode)
 
     # Build a "level list" from the functions database
     # Level List is a dictionary that categorizes a type based on the level in the xml hierarchy
     # 0 - root, 1 - next, 2 - etc each level will have n number of keys associated
     def BuildLevelListFunctions(self):
-        database.parser.SetMode(database.parser.funcMode)
+        database.parser.SetMode(DBMode.functionMode)
         level_list = LevelList()
         database.parser.LevelList(level_list)
         return level_list
@@ -46,7 +47,7 @@ class NodeManager():
     # Level List is a dictionary that categorizes a type based on the level in the xml hierarchy
     # 0 - root, 1 - next, 2 - etc each level will have n number of keys associated
     def BuildLevelListVariables(self):
-        database.parser.SetMode(database.parser.varMode)
+        database.parser.SetMode(DBMode.variableMode)
         level_list = LevelList()
         database.parser.LevelList(level_list)
         return level_list
@@ -63,9 +64,9 @@ class Node(QObject):
 
         # set db path to the right direction
         if nodeManager.current_node_type == nodeManager.selected_type_function:
-            database.parser.SetMode(database.parser.funcMode)
+            database.parser.SetMode(DBMode.functionMode)
         else:
-            database.parser.SetMode(database.parser.varMode)
+            database.parser.SetMode(DBMode.variableMode)
     
         # variables
         self.name = nodeManager.current_node_name
