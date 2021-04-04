@@ -20,6 +20,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
+    <Compile Include="model\cmake_doc_getter.py" />
     <Compile Include="model\cmake_interface.py">
       <SubType>Code</SubType>
     </Compile>

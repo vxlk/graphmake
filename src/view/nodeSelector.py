@@ -156,7 +156,7 @@ class NodeSelectorTree(QWidget):
             self.tooltip_handle.handle.deleteLater()
 
         mouse_pos = QCursor.pos()
-        self.tooltip_handle = Tooltip(self, 'yeehaw', mouse_pos.x(), mouse_pos.y())
+        self.tooltip_handle = Tooltip(self, nodeManager.current_node_name, mouse_pos.x(), mouse_pos.y())
 
     # filter the variable view so that only variables that can be connected show up
     # as an option

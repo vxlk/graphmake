@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import *
+from model.cmake_doc_getter import *
 
 class TooltipContentDecorator(object):
     def __init__(self):
@@ -18,13 +19,17 @@ class Tooltip(object):
         self.decorators = []
         self.x = x
         self.y = y
-        self.width = 100
-        self.height = 100
+        self.width = 260
+        self.height = 190
 
         self.handle = QDialog(parent)
-        tooltip_label = QLabel(self.handle)
-        tooltip_label.setText("message")
-        self.handle.setFixedSize(self.height, self.width)
+        self.handle.setWindowTitle(txt)
+        htmlView = QTextBrowser(self.handle)
+        htmlView.setOpenExternalLinks(True)
+
+        htmlView.setHtml(CmakeDocumentationGetter.get(txt))
+
+        self.handle.setFixedSize(self.width, self.height)
         self.handle.move(x,y)
         self.handle.show()
 
