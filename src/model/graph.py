@@ -20,8 +20,8 @@ class GraphNode():
 # A graph is a backend representation of a connected graph of nodes and variables
 class Graph():
     def __init__(self, name):
-        self.nodes = [] # list of strings of names of function nodes
-        self.vars = []  # list of strings of names of variable nodes
+        self.nodes = [] # list of function nodes (Type=Graphnode)
+        self.vars = []  # list of variable nodes (Type=Graphnode)
         self.connections = {} # connections are indexed by <node array index> : [ var 1 , var 2 ... ]
         self.name = name
 

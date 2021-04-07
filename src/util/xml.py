@@ -34,9 +34,7 @@ class XMLUtil():
     def Root(self) -> ET.Element:
         if (self.current_mode == 1):
             x = 1
-        print(self.current_mode)
         file = self.GetDBPath()
-        print(file)
         root = ET.parse(file).getroot()       
         return root
 
