@@ -1,0 +1,2 @@
+C:/Users/small/Desktop/graphmake/src/tests/cmake/first_example/CMakeFiles/ALL_BUILD.dir
+C:/Users/small/Desktop/graphmake/src/tests/cmake/first_example/CMakeFiles/ZERO_CHECK.dir

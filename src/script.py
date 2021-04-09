@@ -24,6 +24,7 @@ class ScriptingEngine(object):
             raise Exception("Node could not be created: " + node_name)
 
     def load_cmake_file(self, cmake_file_path : str) -> None:
+        # this runs the cmake files which is not really what we wanna do. we wanna load them. we would run the ones gmake generates
         self.cmake_compiler.SetCmakeFileLocation(cmake_file_path, False)
         self.cmake_compiler.Compile()
         print("--- Compiling " + cmake_file_path + " ---")
@@ -31,3 +32,6 @@ class ScriptingEngine(object):
 
     def load_gmake_file(self, gmake_file_path : str) -> None:
         __not_implemented__("gmake files don't exist at the time of writing this :)")
+
+    def clear(self) -> None:
+        self.graph.current_graph.nodes = []
