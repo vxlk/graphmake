@@ -58,6 +58,7 @@ class Graph():
 
             return new_node.guid
         else:
+            # I decided not to make this an exceptional error
             #raise Exception('Could not find variable: ' + str_var_name + ' while parsing cmake file')
             print('Could not find variable: ' + str_var_name + ' while parsing cmake file')
             return nodeManager.bad_node_guid
@@ -122,7 +123,6 @@ class Graph():
                 return index
             index += 1
         raise Exception("Could not find node index")
-        return -1 # meh
 
     def VarIndex(self, str_node_name):
         index = 0
@@ -131,7 +131,6 @@ class Graph():
                 return index
             index += 1
         raise Exception("Could not find variable index")
-        return -1 # meh
        
 # Contains every graph in the scene, queriable by name
 class GraphManager():

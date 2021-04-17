@@ -3,6 +3,7 @@ from model.cmake_parser import *
 from model.cmake_interface import *
 from model.db.db_module.db_model import *
 from model.node_model import *
+from model.graph import Graph
 from util.utilities import *
 
 # A non gui way to interact with graphmake
@@ -35,3 +36,7 @@ class ScriptingEngine(object):
 
     def clear(self) -> None:
         self.graph.current_graph.nodes = []
+
+    def current_graph(self) -> Graph:
+        assert(self.graph.current_graph != None)
+        return self.graph.current_graph

@@ -32,7 +32,7 @@ class CMakeParser():
 
             # NO BOUNDS CHECKS YOLO
             # add function
-            self.data.graph.nodes.append(split_line[0])
+            self.data.graph.TryAddNode(split_line[0])
             node_index += 1
 
             # sanitize out unneeded end parenthesis
