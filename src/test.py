@@ -9,13 +9,16 @@ app = QApplication([])
 script_engine = ScriptingEngine()
 
 script_engine.add_node("host_system_info")
+print("nodes from manually adding host_system_info")
 print(script_engine.current_graph().nodes[0].name)
 
 script_engine.clear()
+print("after clearing the nodes")
 print(script_engine.current_graph().nodes)
 
 # it seems like load_cmake_file is not filling out the graph
 script_engine.load_cmake_file("C:\\Users\\small\\Desktop\\graphmake\\src\\tests\\cmake\\first_example\\CmakeLists.txt")
+print("after loading a cmake file 'first_example'")
 print(script_engine.current_graph().nodes)
 # find tests
 
