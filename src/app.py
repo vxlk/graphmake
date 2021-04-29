@@ -237,5 +237,13 @@ palette.setColor(QPalette.WindowText, Qt.white)
 
 app.setPalette(palette)
 
+# Try to open the cmake file at the location before we open
+cmake_file_path = settings.Value(settings.kCmakeFileLoc)
+cmake_parser.OpenFile(cmake_file_path)
+# update our text view with the contents of the new cmake file
+with open (cmake_file_path, "r") as cmake_file:
+    data_list = cmake_file.readlines()
+    graph.SetGraph(cmake_parser.GenerateGraph(data_list))
+
 window.show()
 app.exec_()

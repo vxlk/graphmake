@@ -69,7 +69,8 @@ class GraphView():
                 # |     |
                 # |        |
                 #   |          |
-                var_name = graph.vars[var_index]
+                var = graph.vars[var_index]
+                var_name = var.name
                 current_index = 1
                 current_var_index = self.var_widget_indices[var_name]
                 # find the correct widget to connect to
