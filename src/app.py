@@ -131,6 +131,23 @@ for item in QssStyleSheetManager.collection.keys():
     theme_menu.addAction(actions[index])
     index +=1
 
+new_action = QAction("&New Document")
+def new():
+    prompt = QMessageBox()
+    prompt.buttons
+    prompt.setWindowTitle("Confirmation of Deletion")
+    prompt.setText("Are you sure you wish to remove all current Cmake Code?")
+    prompt.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+    prompt.setDefaultButton(QMessageBox.Cancel)
+    selection = prompt.exec()
+    if selection == QMessageBox.Ok:
+        # new graph, same name
+        graph.SetGraph(Graph(graph.current_graph.name))
+
+new_action.triggered.connect(new)
+new_action.setShortcut(QKeySequence.New)
+menu.addAction(new_action)
+
 save_action = QAction("&Save")
 def save():
     if file_path is None:

@@ -1,3 +1,4 @@
+from view.line import Line
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -109,7 +110,7 @@ class GraphEditor(QAbstractScrollArea):
         self.connectionStartPoint = QPoint(0,0)
         self.connectionEndPoint = QPoint(0,0)
         self.setMouseTracking(True)
-        self.current_graph = graphManager.TopLevelGraph()
+        self.current_graph : Graph = graphManager.TopLevelGraph()
         self.graphViews = []
         self.graphViews.append(GraphView(self.current_graph.name))
         self.mouse_is_held_down = False
@@ -267,7 +268,8 @@ class GraphEditor(QAbstractScrollArea):
         # draw line
         if self.drawConnection:
             painter.setBrush(Qt.black)
-            painter.drawLine(self.connectionStartPoint, self.connectionEndPoint)
+            #painter.drawLine(self.connectionStartPoint, self.connectionEndPoint)
+            Line.draw(self.connectionStartPoint, self.connectionEndPoint, painter)
         
         # render nodes and pins
         for node in self._nodes:
