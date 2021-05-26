@@ -45,6 +45,8 @@ class Settings():
             self.Add(self.kCmakeLogFileLoc, self.cmakeLogFilePath)
             self.Add(self.kDescLocation, self.descPath)
             self.Add(self.kTagLocation, self.tagsPath)
+            # make the cmake file if first load
+            self.CmakeFile()
 
     # remember to close this file handle if you use this function
     def CmakeFile(self) -> io.TextIOWrapper:
